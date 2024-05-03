@@ -1,0 +1,69 @@
+##Follow the installation instructions patiently on each link
+#Autodock Vina installation on Mac
+https://bioinformaticsreview.com/20220117/tutorial-how-to-install-autodock-vina-on-mac-os/
+
+#Racoon and execution for ligand conversion to PDBQT
+https://autodock.scripps.edu/resources/raccoon/
+/Users/Shared/MGLTools/1.5.7/bin/pythonsh raccoon.py 
+
+#blind docking on Vina
+https://bioinformaticsreview.com/20190501/how-to-perform-blind-docking-using-autodock-vina/
+
+#openbabel install
+https://open-babel.readthedocs.io/en/latest/Installation/install.html
+
+#configuration file for docking PLK1-PBD (config.txt)
+receptor = 4hco_1.pdbqt
+ligand = c*.pdbqt
+
+
+center_x = 17.05 
+center_y = 12.73  
+center_z = 32.27  
+
+size_x = 94
+size_y = 94
+size_z = 95
+
+
+num_modes = 10 
+
+exhaustiveness= 8
+
+
+#A bash script to run the docking (vina_vs.bash)
+for f in c*; do b=`basename $f`; echo Processing ligand $b; mkdir -p data01; vina --config donf.txt --ligand $f --out data01/$f --log data01/$f.txt; done
+#result analysis
+cd data01
+mkdir rep_structures
+for i in `seq 1 183`; do python3 trim_data.py c${i}.pdbqt c${i}_m1.pdbqt; done
+for i in `seq 1 183`; do sed -n '2p' c${i}_m1.pdbqt > result${i}; done
+cat result* > dock_result.txt
+mv c*_m1.pdbqt rep_structures
+vi dock_result.txt
+rm c*.*
+re result*  
+
+
+#trim your output to the required pose (trim_data.py)
+import sys
+import numpy as np
+import re
+
+input_filename = sys.argv[1]
+output_filename = sys.argv[2]
+
+def extract_text(input_filename, start_string, end_string):
+    with open(input_filename, "r") as f:
+        text = f.read()
+    return re.findall(start_string + "(.*?)" + end_string, text, re.DOTALL)
+
+if __name__ == "__main__":
+    filename = input_filename
+    start_string = "MODEL 1"
+    end_string = "MODEL 2"
+    text = extract_text(input_filename, start_string, end_string)
+#with open(output_filename, "w") as f:
+    #f.write(text)    
+    np.savetxt(output_filename, text, "%s")
+#    print(text)
