@@ -1,0 +1,206 @@
+ORCA installation on DARWIN (We have installed a version for our Workgroup, this documentation is for learning purposes). ORCA is an open-source package for QM computing like Gaussian.
+ 
+1. 	Get your xsedeuuid to ACCESS DARWIN ( submit a help desk ticket on the ACCESS portal rather than directly emailing any staff at UD.  At any time, staff may be out of the office and unavailable to respond, so submitting a ticket via the ACCESS portal will be appropriately directed to the staff available to provide support at that time)
+ 
+2. 	You will receive an email like "New DARWIN ACCESS (XSEDE) account information," follow the instructions and reset your password.
+ 
+3. 	 Log in to DARWIN with your uid (xsedeuxxxx) and domain name (darwin.hpc.udel.edu) using Bitvise, execute workgroup -g xg-med230016
+ 
+4. 	Download ORCA (we used this version (orca_5_0_4_linux_x86-64_openmpi411_part1.tar.xz, orca_5_0_4_linux_x86-64_openmpi411_part2.tar.xz, orca_5_0_4_linux_x86-64_openmpi411_part3.tar.xz) from the orca forum after signing up or login
+ 
+5. 	On the terminal, make a directory to keep all orca executables and .tar.xz files in one folder: mkdir orca, then cd orca
+ 
+6. 	Use the Bitvise sftp transfer protocol to upload the “orca 5.0.1.*.tar.xz from your laptop to your /home/${USER}/orca directory (home is the default directory that pops when you log in with Bitvise), click refresh to see your newly created orca directory. Drag and drop the .tar.xz file inside this orca folder.
+ 
+7. 	Unpack the .tar.xz file with tar -xf orca_5_0_4_linux_x86-64_openmpi411_partxxx.tar.xz in your terminal and others
+ 
+8. 	Rename the unzipped orca_5_0_4_linux_x86-64_openmpi411_partxx.tar.xz  in the orca folder to 5.0.4
+ 
+9.	Create orca in directory /lustre/xg-med230016/sw/ to have /lustre/xg-med230016/sw/orca/
+
+10.	Move 5.0.4 in your /home/${USER}/orca/ to /lustre/xg-med230016/sw/orca/ so we have /lustre/xg-med230016/sw/orca/5.0.4
+ 
+11. 	Create orca.vpkg_yaml in VALET directory /lustre/xg-med230016/sw/valet (using the documentation directive https://docs.hpc.udel.edu/technical/recipes/software-managment)
+
+orca:
+    prefix: /lustre/xg-med230016/sw/orca
+    description: our group copies of ORCA software
+    default-version: 5.0.4
+    versions:
+        "5.0.4":
+            description: binary executables (not from source)
+            actions:
+                - bindir: ${VALET_PATH_PREFIX}
+                - libdir: ${VALET_PATH_PREFIX}
+            dependencies:
+                - openmpi/4.1.2
+
+12.	Run the following
+a.	vpkg_check $WORKDIR/sw/valet/orca.vpkg_yaml
+b.	vpkg_versions orca
+c.	vpkg_require orca/5.0.4
+d.	which orca
+Executables to run calculations
+e.	orca
+f.	orca_rocis
+
+13. Since the installation is for the entire workgroup, each user will only need steps 1 and 2 (if xsedeuid is not yet available), then 3, 12a, 12c, and 12e or 12f for every orca calculation login and execution. 
+ 
+ 
+IT support communication at steps 11 and 12 is available below:
+As far as ORCA, you’ve made some progress: you created $WORKDIR/sw/orca/5.0.4 and unpacked your tar archive of binaries therein. Leaving the contents in a subdirectory “orca_5_0_4” needlessly adds another level to the path, so I moved everything in “orca_5_0_4” back a level and removed the “orca_5_0_4” directory. So now you have all of the ORCA 5.0.4 binaries situated under $WORKDIR/sw/orca/5.0.4. According to the ORCA documentation, that path needs to get added to the PATH and LD_LIBRARY_PATH environment variables. We model that in the package definition file:
+orca:
+	prefix: /lustre/xg-med230016/sw/orca
+	description: our group copies of ORCA software
+	
+    default-version: 5.0.4
+	
+    versions:
+    	"5.0.4":
+        	description: binary executables (not from source)
+        	actions:
+            	- bindir: ${VALET_PATH_PREFIX}
+            	- libdir: ${VALET_PATH_PREFIX}
+What does this file indicate:
+Versions of ORCA are installed under /lustre/xg-med230016/sw/orca. This is the package’s prefix directory.
+One version (the default) is named “5.0.4” and is implicitly installed under that name appended to the package’s prefix, i.e. /lustre/xg-med230016/sw/orca/5.0.4. This is that version’s prefix directory.
+Since that directory is the directory you need added to PATH and LD_LIBRARY_PATH, two actions are: 
+add the version’s prefix directory as a “bindir” (binary directory)
+add the version’s prefix directory as a “libdir” (shared library directory)
+There’s one last issue with the ORCA 5.0.4 install: it requires Open MPI 4.1.1. API compatibility between minor releases of Open MPI is pretty good, so as long as the cluster provides a close relative of 4.1.1 we should be okay:
+[root@login00.darwin ~]# vpkg_versions openmpi | grep 4\.1
+* 4.1.0                  	compiled with system GCC compilers
+  4.1.0:gcc-10.1.0       	compiled with GCC 10.1.0 compilers
+  4.1.0:intel-2020       	compiled with Intel 2020 compilers
+  4.1.0:intel-2020,no-ucx	compiled with Intel 2020 compilers (OFI instead of UCX)
+  4.1.2                  	compiled with system GCC compilers
+  4.1.2:nvidia-hpc-sdk-2022  compiled with NVIDIA HPC SDK 2022 compilers
+  4.1.4:intel-2020       	compiled with Intel 2020 compilers, UCX 1.13.1
+  4.1.4:intel-oneapi-2022	compiled with Intel oneAPI 2022 compilers, UCX 1.13.1
+  4.1.5                  	compiled with system GCC compilers, UCX 1.13.1
+  4.1.5:gcc-12.2         	compiled with GCC 12.2 compilers, UCX 1.13.1
+  4.1.5:intel-2020       	compiled with Intel 2020 compilers, UCX 1.13.1
+  4.1.5:intel-oneapi-2022	compiled with Intel oneAPI 2022 compilers, UCX 1.13.1
+  4.1.5:intel-oneapi-2023	compiled with Intel oneAPI 2023 compilers, UCX 1.13.1
+So the package “openmpi/4.1.2” should provide an adequate Open MPI for ORCA 5.0.4. You don’t need to install your own copy, just tell VALET that “orca/5.0.4” requires that package:
+orca:
+	prefix: /lustre/xg-med230016/sw/orca
+	description: our group copies of ORCA software
+	
+    default-version: 5.0.4
+	
+    versions:
+    	"5.0.4":
+        	description: binary executables (not from source)
+        	actions:
+            	- bindir: ${VALET_PATH_PREFIX}
+            	- libdir: ${VALET_PATH_PREFIX}
+        	dependencies:
+            	- openmpi/4.1.2
+Check that your VALET package definition is ok:
+$ vpkg_check $WORKDIR/sw/valet/orca.vpkg_yaml
+/lustre/xg-med230016/sw/valet/orca.vpkg_yaml is OK
+   :
+ 
+$ vpkg_versions orca
+ 
+Available versions in package (* = default version):
+ 
+[/lustre/xg-med230016/sw/valet/orca.vpkg_yaml]
+orca 	our group copies of ORCA software
+* 5.0.4  binary executables (not from source)
+When you want to use this version, add it to the current shell environment:
+$ vpkg_require orca/5.0.4
+Adding dependency `openmpi/4.1.2` to your environment
+Adding package `orca/5.0.4` to your environment
+ 
+$ which orca_rocis
+/lustre/xg-med230016/sw/orca/5.0.4/orca_rocis
+ 
+$ orca_rocis
+--------------------------------------------------------------------------------
+                      	ORCA ROCIS CALCULATION
+--------------------------------------------------------------------------------
+ 
+[file orca_rocis/orca_rocis.cpp, line 173]: ERROR (ROCIS): Failed to read the input file
+ 
+[file orca_rocis/orca_rocis.cpp, line 173]: ERROR (ROCIS): Failed to read the input file
+In your job scripts (see the templates we have available for Open MPI jobs) you’d also have a “vpkg_require orca/5.0.4” to get the runtime environment setup for ORCA 5.0.4 programs.
+I’ve made changes to your $WORKDIR/sw to implement all of the above. PLEASE review all the changes and confirm that you understand all of this before you begin running jobs.
+
+Running ORCA on DARWIN 
+Kindly scan through the script and edit your email.
+Briefly:
+login to DARWIN with Bitvise
+Create a directory (e.g., orca_tutorial) under your home directory.
+drag water.inp in orca_tutorial or create your input file with Avogadro 
+Drag/upload the running script 
+sbatch orca_slurm_script.sh in the terminal to submit
+use squeue -u yourxsedeuid to see the progress of your running job
+
+
+#!/bin/bash -l
+
+#SBATCH --job-name water 	## name that will show up in the queue (make it the same as .inp file name) 
+#SBATCH --partition=standard	## the partitions to run (based on DARWIN specification, this selection is cool, you may want to try others anyways)
+#SBATCH --output=slurm-%j.out	## filename of the output; the %j is equal to jobID; default is slurm-[jobID].out
+#SBATCH --error=slurm-%j.err	## filename of the error; the %j is equal to jobID; default is slurm-[jobID].err
+#SBATCH --nodes=12		## number of nodes
+#SBATCH --ntasks=12		## number of tasks (analyses) to run
+#SBATCH --mem=8G   		## tentative memory required to store the output file (increase for huge molecules)
+#SBATCH --time=0-10:00:00	## time for analysis (day-hour:min:sec)
+#SBATCH --mail-user youremail@gallaudet.edu ## user email to send info about the job status
+#SBATCH --mail-type BEGIN 	## email prompt when job starts running, so if on queue, you won't receive email 
+#SBATCH --mail-type END,FAIL	## email prompt when it ends or fails
+
+# Section for defining job variables and settings:
+vpkg_check $WORKDIR/sw/valet/orca.vpkg_yaml 	## libaries describing orca directory and dependencies
+vpkg_require orca/5.0.4
+
+LaunchDir=$PWD;			## your current work directory and where you have your 
+
+#create a local working directory for the ORCA calculation
+ORCA_SCRDIR="$SLURM_JOB_ID"
+mkdir -p $ORCA_SCRDIR
+
+#Copy the input file to the local working directory
+cp $LaunchDir/$SLURM_JOB_NAME.inp  $ORCA_SCRDIR/$SLURM_JOB_NAME.inp
+
+#Start ORCA
+/lustre/xg-med230016/sw/orca/5.0.4/orca  $ORCA_SCRDIR/$SLURM_JOB_NAME.inp > $LaunchDir/$SLURM_JOB_NAME.out
+
+# After ORCA is finished move the gbw file back to the home directory and generate molden input
+mv $ORCA_SCRDIR/$SLURM_JOB_NAME.gbw $LaunchDir/$SLURM_JOB_NAME.gbw
+/lustre/xg-med230016/sw/orca/5.0.4/orca_2mkl $LaunchDir/$SLURM_JOB_NAME  -molden
+
+# After finishing successfully clean up the local working directory
+rm -rf $ORCA_SCRDIR
+
+exit 0
+
+
+Analysis (HOMO-LUMO)
+After a successful orca calculation, check for complete optimization in your remote terminal or downloaded z8xxx.out file on your local terminal with grep -inR "OPTIMIZATION RUN DONE" z8xxx.out, then do the following to obtain your HOMO, LUMO, and HOMO-LUMO energies.
+We can use a command prompt (MacBook users and any Terminal) to extract the HOMO and LUMO in ORCA output with the below, whereby the first command reps HOMO and the second is LUMO.
+ 
+grep "ORBITAL ENERGIES" z8xxx.out -A40 $1 | grep '2.0000' |tail -1 |awk '{print $4}' 
+grep "ORBITAL ENERGIES" z8xxx.out -A40 $1 | grep '0.0000' |head -1 |awk '{print $4}'
+  
+If the molecule has a doublet multiplicity, the likelihood of SOMO/SUMO is high. In such case, we will have the tweak HOMO command to grep '1.0000' or something like that.
+
+
+For HOMO-LUMO visual, values, and other analyses, do the below (on Windows only).
+Kindly use the link http://sobereva.com/multiwfn/download.html to download multiwfn and unzip " Windows 64bit: Multiwfn_3.8_dev_bin_win64.rar" package binary in a convenient path on your laptop/desktop.
+You should have a z8xxx.molden.input from your ORCA calculations, drag this to your desktop/local folder.
+Open the Multiwfn Application, it will pop a "terminal like" black window.
+Press ENTER to go to folders, find the downloaded z8xxx.molden.input and upload in Multiwfn.
+It will show several analyses, click 0 on the terminal to see HOMO, LUMO, and energy gap in various units
+Find the drop-down by the righthand side (Orbitals:) of the popped Orbital isosurfaces menu. Select the orbital number for HOMO and LUMO as displayed in the terminal.
+You can do other adjustments like unclicking “Show labels, Show axis, turn around with (Up, Down, left, Right)” and save the picture of the lobes.
+Click return and press r to load another molden file for analysis.
+
+
+
+
+
+
