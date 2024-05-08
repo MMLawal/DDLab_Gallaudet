@@ -1,0 +1,4 @@
+Installing AmberTools in your HPC home directory
+load anaconda with "module load anaconda"
+Anaconda is available in most computing infrastructures.
+Follow the instructions in this link https://ambermd.org/GetAmber.php
