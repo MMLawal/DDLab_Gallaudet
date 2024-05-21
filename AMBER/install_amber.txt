@@ -11,6 +11,24 @@ rm -rf ~/miniconda3/miniconda.sh
 #restart terminal or shell
 re-login 
 
+2. Download and install openmpi
+#download
+go to https://www.open-mpi.org/software/ompi/v5.0/ and download openmpi-5.0.3.tar.bz2
+#create a folder in your remote home directory and drag to your home on remote server
+mkdir -p ~/mpi_install
+drag openmpi-5.0.3.tar.bz2 to mpi_install
+#tar and install
+tar -xf mpi_install/openmpi-5.0.3.tar.bz2 openmpi-5.0.3/
+cd openmpi-5.0.3/
+./configure --prefix=$HOME 2>&1 | tee config.out
+#load dependencies
+module purge
+module load cmake
+make -j 8 all 2>&1 | tee make.out #specifying 8 processors
+make install 2>&1 | tee install.out
+#test the installation
+mpirun
+
 3. Select Option 3: Getting source code in tar format from Ambermd.org https://ambermd.org/GetAmber.php by filling name and institution appropriately
 
 4. Getting Amber22 for non-commerical use on Ambermd.org
@@ -27,7 +45,8 @@ cd amber22_src/build/
 #view and edit run_cmake
 vi run_cmake #Change DMPI=FALSE -DCUDA=FALSE to TRUE and save
 #load other dependencies available within the GPU-enabled HPC
-module load openmpi cuda cmake
+module purge
+module load cuda cmake
 #run cmake
 ./run_cmake
 #install
