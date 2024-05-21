@@ -86,8 +86,8 @@ def cluster_molecules(smiles_list, num_clusters):
   }
 
 # Example usage:
-smiles_list = smiles_list # Replace with your 100 SMILES strings
-num_clusters = 9
+smiles_list = smiles_list # Replace with your 183 SMILES strings
+num_clusters = 9 #11 or whatever size
 
 # Cluster molecules and get results
 results = cluster_molecules(smiles_list, num_clusters)
