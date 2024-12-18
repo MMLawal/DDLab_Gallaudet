@@ -1,0 +1,7 @@
+trajin *.dcd
+rms first
+average crdset MyAvg
+run 
+rms ref MyAvg
+atomicfluct out rmsf.dat :1-224 byres
+go
