@@ -1,16 +1,61 @@
 ##Follow the installation instructions patiently on each link
 #Autodock Vina installation on Mac
-https://bioinformaticsreview.com/20220117/tutorial-how-to-install-autodock-vina-on-mac-os/
+Source: https://bioinformaticsreview.com/20220117/tutorial-how-to-install-autodock-vina-on-mac-os/
 
+Installing prerequisites
+You have to install a Windows system implementation to run X11-based applications on Mac OS X. You will install Apple X11 for up to Mac OS v10.3 and XQuartz for Mac OS v11 and above. Download Apple X11 from here and XQuartz from here depending on your system’s configuration.
+
+After downloading the dmg file, double-click on it. It will ask for permissions and start verifying the downloaded file and will show a .pkg file. Again, double-click on it and continue with the steps. It will take a few minutes to finish the installation. Further, it will ask you to drag this into the Applications folder, do as it says. You can move the downloaded dmg file to the trash.
+
+Downloading MGLTools for Mac OS
+Currently, MGLTools is not working on Mac Catalina. If you are using Catalina, then, unfortunately, you cannot run MGLTools. Try if you can install it using VirtualBox.
+
+Now, download MGLTools from here. We are going to use a GUI installer for its installation. Download the installer, namely, mgltools-1.5.7-MacOS-X-Install.dmg (GUI installer 91Mb).
+
+Downloading Autodock Vina on Mac OS
+Download 64-bit or 32-bit files (depending on your system’s configuration) from here. We are downloading the 64-bit version of Autodock Vina. It is a tar.gz file.
+
+Installing MGLTools on Mac OS
+Now, double-click on the dmg file. It will show you an installer after verification. Double-click on that too. If it does not open, then control+click –> click ‘Open’. It will ask for your permission, click on ‘Allow‘. It will open with the help of XQuartz or the Apple X11 launcher. Accept the agreement and let it install. It will take a few minutes to finish.
+
+To check your installation, go to the Applications folder, you will find a mgltools folder that contains Autodock Tools 1.5.7 version. Double-click on it to launch.
+
+Installing Autodock Vina on Mac OS
+Double-click the downloaded tar file, it will create a new folder, namely, ‘autodock_vina_1_1_2_mac_catalina_64bit‘. Move inside the folder (by double-clicking on it). You will see a ‘bin’ folder inside which you will find the vina executable file. You will have to provide permission for it as shown below.
+
+Open a terminal and paste the following commands.
+
+% cd autodock_vina_1_1_2_mac_catalina_64bit/
+
+% cd bin/
+
+% chmod +x vina
+
+Now, let’s add this vina executable to the path so that you can run it easily from the terminal. Follow the commands given below.
+
+% sudo nano /etc/paths (or sudo vi /etc/paths) it will pop password authorization, enter is and.....
+
+Now add the full path to the vina executable to your (/etc/paths)
+
+% /Users/username/Downloads/autodock_vina_1_1_2_mac_catalina_64bit/bin
+
+Press Control+X, type ‘Y’, and return. If "sudo vi", press "esc" and ":wq" to save 
+
+Now, type ‘vina‘ in the terminal, it should display the usage. It means that you have successfully installed vina on your system.
+
+
+Other links:
 #Racoon and execution for ligand conversion to PDBQT
 https://autodock.scripps.edu/resources/raccoon/
 /Users/Shared/MGLTools/1.5.7/bin/pythonsh raccoon.py 
 
-#blind docking on Vina
-https://bioinformaticsreview.com/20190501/how-to-perform-blind-docking-using-autodock-vina/
-
 #openbabel install
 https://open-babel.readthedocs.io/en/latest/Installation/install.html
+
+
+#Autodock Vina installation on Windows
+Use this video (https://www.youtube.com/watch?v=gnmZYEtv4os) and take hints from the MacBook installation procedure
+
 
 #configuration file for docking PLK1-PBD (config.txt)
 receptor = 4hco_1.pdbqt
