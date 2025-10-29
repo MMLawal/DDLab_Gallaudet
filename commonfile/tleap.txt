@@ -1,0 +1,21 @@
+source leaprc.protein.ff19SB
+source leaprc.phosaa19SB
+source leaprc.gaff
+source leaprc.water.tip3p
+loadamberparams frcmod.ionsjc_tip3p
+loadamberparams lig.frcmod
+LIG = loadmol2 lig.mol2
+receptor = loadPDB 4hco_plk1.pdb
+complex = combine {receptor LIG}
+set default PBRadii mbondi2
+saveAmberParm LIG lig.top lig.rst7
+saveAmberParm receptor rec.top rec.rst7
+saveAmberParm complex com.top com.rst7
+saveAmberParm complex step2_input.parm7 step2_input.rst7
+savepdb complex step2_input.pdb
+charge complex
+solvatebox complex TIP3PBOX 14 iso
+addionsRand complex Na+ 75.0 Cl- 75.0 
+saveAmberParm complex step3_input.parm7 step3_input.rst7
+savepdb complex step3_input.pdb
+quit
