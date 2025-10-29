@@ -1,0 +1,10 @@
+c1(ccc(cc1)C(=O)Nc1c(cc(cc1)C)C(=O)O)SCCCCCCCC	abbapolin-12.pdb
+Clc1cc2c(s1)c(=O)n(c1n2c(nn1)Sc1n(cnc1N(=O)=O)C)CC1CC1	allopole.pdb
+C1C(Cn2c3n(c4c(c2=O)sc(c4)Cl)c(=S)[nH]n3)C1	allopole-a.pdb
+OC(=O)C(C(=O)O)Cc1cc(ccc1)NC(=O)c1sc(cc1)C(=O)c1cc(I)ccc1	polotyrin.pdb
+N(c1cc(c(O)cc1C)C(C)C)OC(=O)c1ccccc1C	poloxin.pdb
+O(/N=C/1\C=C(C)C(=O)C=C1C)C(=O)c1c(C)cccc1	poloxin2.pdb
+C(=c\1/sc2n(c1=O)nc(c(=O)n2)C)/c1cc(ccc1OC)Br	poloxipan.pdb
+c1(nc(c(o1)S(=O)(=O)CC)S(=O)(=O)c1ccccc1)c1ccc(cc1)F	t521.pdb
+C1(=CC(=O)C(=CC1=O)C(C)C)C	thymoquinone.pdb
+N#Cc1cccc(c1)CN1C[C@@H]2C[C@H](C1)c1c(ccc(=O)n1C2)c1ccc2ccccc2c1	zinc20503376.pdb

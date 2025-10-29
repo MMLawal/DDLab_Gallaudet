@@ -1,0 +1,16 @@
+receptor = ../plk1.pdbqt
+ligand = *.pdbqt
+
+
+center_x = 3
+center_y = -20
+center_z = -26
+
+size_x = 18
+size_y = 18
+size_z = 18
+
+
+num_modes = 5
+
+exhaustiveness= 48

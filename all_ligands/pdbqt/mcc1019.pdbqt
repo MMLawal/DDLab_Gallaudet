@@ -1,0 +1,37 @@
+REMARK  Name = mcc1019.pdb
+REMARK  5 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: C_1  and  C8_10
+REMARK    2  A    between atoms: C7_9  and  C11_15
+REMARK    3  A    between atoms: C8_10  and  O2_12
+REMARK    4  A    between atoms: O2_12  and  C9_13
+REMARK    5  A    between atoms: C9_13  and  C10_14
+REMARK                            x       y       z     vdW  Elec       q    Type
+REMARK                         _______ _______ _______ _____ _____    ______ ____
+ROOT
+ATOM      1  C   UNL     1      18.121  -4.042  -6.390  0.00  0.00    +0.000 A 
+ATOM      2  O   UNL     1      17.634  -3.433  -5.263  0.00  0.00    +0.000 OA
+ATOM      3  C1  UNL     1      17.585  -4.373  -4.282  0.00  0.00    +0.000 A 
+ATOM      4  C2  UNL     1      17.162  -4.153  -2.974  0.00  0.00    +0.000 A 
+ATOM      5  C3  UNL     1      17.188  -5.257  -2.115  0.00  0.00    +0.000 A 
+ATOM      6  C4  UNL     1      17.619  -6.508  -2.560  0.00  0.00    +0.000 A 
+ATOM      7  C5  UNL     1      18.046  -6.695  -3.882  0.00  0.00    +0.000 A 
+ATOM      8  C6  UNL     1      18.028  -5.598  -4.764  0.00  0.00    +0.000 A 
+ATOM      9  C7  UNL     1      18.386  -5.382  -6.129  0.00  0.00    +0.000 A 
+ENDROOT
+BRANCH   1  10
+ATOM     10  C8  UNL     1      18.344  -3.273  -7.594  0.00  0.00    +0.000 C 
+ATOM     11  O1  UNL     1      19.184  -2.387  -7.705  0.00  0.00    +0.000 OA
+BRANCH  10  12
+ATOM     12  O2  UNL     1      17.415  -3.580  -8.542  0.00  0.00    +0.000 OA
+BRANCH  12  13
+ATOM     13  C9  UNL     1      16.140  -2.951  -8.342  0.00  0.00    +0.000 C 
+ATOM     14  C10 UNL     1      15.072  -4.028  -8.401  0.00  0.00    +0.000 C 
+ENDBRANCH  12  13
+ENDBRANCH  10  12
+ENDBRANCH   1  10
+BRANCH   9  15
+ATOM     15  C11 UNL     1      18.968  -6.366  -7.072  0.00  0.00    +0.000 C 
+ATOM     16 Br   UNL     1      20.902  -6.351  -6.875  0.00  0.00    +0.000 Br
+ENDBRANCH   9  15
+TORSDOF 4

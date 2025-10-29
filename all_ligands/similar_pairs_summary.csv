@@ -1,0 +1,4 @@
+Hit_Label,Inhibitor_Label,Tanimoto_Similarity,Hit_SMILES,Inhibitor_SMILES
+Hit_27,Inhibitor_10,0.26136363636363635,COc1ccc(CCNC(=O)c2ccc(Cn3c(=O)c4ccccc4n(Cc4cccc(C)c4)c3=O)cc2)cc1OC,c1(ccc2c(c1)c1c(n2CC)cccc1)/C=N\NC(=O)c1cc(ccc1)Cl
+Hit_27,Inhibitor_7,0.25555555555555554,COc1ccc(CCNC(=O)c2ccc(Cn3c(=O)c4ccccc4n(Cc4cccc(C)c4)c3=O)cc2)cc1OC,c1(ccc2c(c1)c1c(n2CC)cccc1)/C=N\NC(=O)c1ccc(cc1)N(=O)=O
+Hit_41,Inhibitor_10,0.25,O=C(Cn1c(=O)cc(C(=O)N2CCCCC2)c2ccccc21)Nc1ccc(F)c(Cl)c1,c1(ccc2c(c1)c1c(n2CC)cccc1)/C=N\NC(=O)c1cc(ccc1)Cl

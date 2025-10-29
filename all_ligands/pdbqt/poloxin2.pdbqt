@@ -1,0 +1,40 @@
+REMARK  Name = poloxin2.pdb
+REMARK  6 active torsions:
+REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK    1  A    between atoms: O2_1  and  N_2
+REMARK    2  A    between atoms: O2_1  and  C15_12
+REMARK    3  A    between atoms: C12_5  and  C14_11
+REMARK    4  A    between atoms: C8_6  and  C7_7
+REMARK    5  A    between atoms: C15_12  and  C1_14
+REMARK    6  A    between atoms: C2_15  and  C16_16
+REMARK                            x       y       z     vdW  Elec       q    Type
+REMARK                         _______ _______ _______ _____ _____    ______ ____
+ROOT
+ATOM      1  O2  LIG     1      18.084  -3.320  -4.256  0.00  0.00    +0.000 OA
+ENDROOT
+BRANCH   1   2
+ATOM      2  N   LIG     1      18.166  -2.776  -5.561  0.00  0.00    +0.000 NA
+ATOM      3  C11 LIG     1      17.258  -3.244  -6.374  0.00  0.00    +0.000 C 
+ATOM      4  C9  LIG     1      16.123  -4.189  -6.017  0.00  0.00    +0.000 C 
+ATOM      5  C12 LIG     1      17.297  -2.799  -7.820  0.00  0.00    +0.000 C 
+ATOM      6  C8  LIG     1      15.125  -4.498  -6.868  0.00  0.00    +0.000 C 
+ATOM      7  C7  LIG     1      13.967  -5.379  -6.482  0.00  0.00    +0.000 C 
+ATOM      8  C10 LIG     1      15.163  -3.986  -8.280  0.00  0.00    +0.000 C 
+ATOM      9  O1  LIG     1      14.279  -4.242  -9.085  0.00  0.00    +0.000 OA
+ATOM     10  C13 LIG     1      16.331  -3.154  -8.688  0.00  0.00    +0.000 C 
+ATOM     11  C14 LIG     1      18.455  -1.967  -8.260  0.00  0.00    +0.000 C 
+ENDBRANCH   1   2
+BRANCH   1  12
+ATOM     12  C15 LIG     1      19.188  -4.043  -3.883  0.00  0.00    +0.000 C 
+ATOM     13  O3  LIG     1      20.351  -3.682  -4.003  0.00  0.00    +0.000 OA
+BRANCH  12  14
+ATOM     14  C1  LIG     1      18.826  -5.486  -3.837  0.00  0.00    +0.000 A 
+ATOM     15  C2  LIG     1      17.777  -6.023  -3.044  0.00  0.00    +0.000 A 
+ATOM     16  C16 LIG     1      16.956  -5.223  -2.080  0.00  0.00    +0.000 C 
+ATOM     17  C4  LIG     1      17.476  -7.386  -3.169  0.00  0.00    +0.000 A 
+ATOM     18  C6  LIG     1      18.220  -8.213  -4.010  0.00  0.00    +0.000 A 
+ATOM     19  C5  LIG     1      19.287  -7.691  -4.741  0.00  0.00    +0.000 A 
+ATOM     20  C3  LIG     1      19.596  -6.333  -4.650  0.00  0.00    +0.000 A 
+ENDBRANCH  12  14
+ENDBRANCH   1  12
+TORSDOF 3

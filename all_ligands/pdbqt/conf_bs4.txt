@@ -1,0 +1,16 @@
+receptor = ../af_plk3.pdbqt
+ligand = *.pdbqt
+
+
+center_x = 36
+center_y = 11
+center_z = -5
+
+size_x = 16
+size_y = 17
+size_z = 18
+
+
+num_modes = 5
+
+exhaustiveness= 48
