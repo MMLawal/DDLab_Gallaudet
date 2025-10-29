@@ -1,0 +1,80 @@
+REMARK   1 File created by GaussView 6.0.16
+HETATM    1  C1  UNL     1      -0.538  -2.142  -0.693                       C
+HETATM    2  O1  UNL     1      -1.201  -0.904  -0.774                       O
+HETATM    3  C2  UNL     1       0.564  -2.126   0.392                       C
+HETATM    4  C3  UNL     1       1.610  -1.063   0.153                       C
+HETATM    5  O2  UNL     1       2.759  -1.435  -0.214                       O
+HETATM    6  C4  UNL     1       1.342   0.391   0.327                       C
+HETATM    7  C5  UNL     1       0.291   0.854   1.134                       C
+HETATM    8  C6  UNL     1       0.061   2.221   1.286                       C
+HETATM    9  C7  UNL     1       0.880   3.166   0.640                       C
+HETATM   10  C8  UNL     1       1.942   2.716  -0.179                       C
+HETATM   11  C9  UNL     1       2.163   1.332  -0.316                       C
+HETATM   12  N1  UNL     1       2.800   3.648  -0.871                       N
+HETATM   13  O3  UNL     1       2.468   4.834  -1.027                       O
+HETATM   14  O4  UNL     1       3.876   3.261  -1.373                       O
+HETATM   15  O5  UNL     1       0.670   4.545   0.804                       O
+HETATM   16  C10 UNL     1      -0.361   5.121   1.601                       C
+HETATM   17  C11 UNL     1       0.019  -2.559  -2.036                       C
+HETATM   18  O6  UNL     1       0.847  -1.886  -2.706                       O
+HETATM   19  N2  UNL     1      -0.515  -3.795  -2.494                       N
+HETATM   20  C12 UNL     1      -1.449  -4.180  -1.502                       C
+HETATM   21  C13 UNL     1      -2.264  -5.310  -1.544                       C
+HETATM   22  C14 UNL     1      -3.176  -5.515  -0.497                       C
+HETATM   23 CL1  UNL     1      -4.221  -6.923  -0.513                      Cl
+HETATM   24  C15 UNL     1      -3.268  -4.584   0.556                       C
+HETATM   25  C16 UNL     1      -2.442  -3.446   0.578                       C
+HETATM   26 CL2  UNL     1      -2.622  -2.266   1.867                      Cl
+HETATM   27  C17 UNL     1      -1.516  -3.271  -0.462                       C
+HETATM   28  H1  UNL     1      -1.894  -0.970  -1.484                       H
+HETATM   29  H2  UNL     1       1.062  -3.122   0.405                       H
+HETATM   30  H3  UNL     1       0.129  -1.999   1.402                       H
+HETATM   31  H4  UNL     1      -0.357   0.168   1.661                       H
+HETATM   32  H5  UNL     1      -0.757   2.533   1.920                       H
+HETATM   33  H6  UNL     1       2.971   0.985  -0.949                       H
+HETATM   34  H7  UNL     1      -1.357   4.810   1.221                       H
+HETATM   35  H8  UNL     1      -0.241   4.813   2.661                       H
+HETATM   36  H9  UNL     1      -0.288   6.226   1.542                       H
+HETATM   37  H10 UNL     1      -0.308  -4.280  -3.395                       H
+HETATM   38  H11 UNL     1      -2.198  -6.007  -2.370                       H
+HETATM   39  H12 UNL     1      -3.988  -4.740   1.350                       H
+END
+CONECT    1    2    3   17   27
+CONECT    2   28    1
+CONECT    3    4   29   30    1
+CONECT    4    5    6    3
+CONECT    5    4
+CONECT    6    7   11    4
+CONECT    7    8   31    6
+CONECT    8    9   32    7
+CONECT    9   10   15    8
+CONECT   10   11   12    9
+CONECT   11   33    6   10
+CONECT   12   13   14   10
+CONECT   13   12
+CONECT   14   12
+CONECT   15   16    9
+CONECT   16   34   35   36   15
+CONECT   17   18   19    1
+CONECT   18   17
+CONECT   19   20   37   17
+CONECT   20   21   27   19
+CONECT   21   22   38   20
+CONECT   22   23   24   21
+CONECT   23   22
+CONECT   24   25   39   22
+CONECT   25   26   27   24
+CONECT   26   25
+CONECT   27    1   20   25
+CONECT   28    2
+CONECT   29    3
+CONECT   30    3
+CONECT   31    7
+CONECT   32    8
+CONECT   33   11
+CONECT   34   16
+CONECT   35   16
+CONECT   36   16
+CONECT   37   19
+CONECT   38   21
+CONECT   39   24

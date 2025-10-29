@@ -1,0 +1,16 @@
+receptor = 4hco-plk1.pdbqt
+ligand = lig*.pdbqt
+
+
+center_x = 18
+center_y = 11 
+center_z = 30
+
+size_x = 20
+size_y = 20
+size_z = 20
+
+
+num_modes = 5
+
+exhaustiveness= 48

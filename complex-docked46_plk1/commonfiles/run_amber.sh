@@ -1,0 +1,25 @@
+#!/bin/bash
+#FILENAME: jobsubmit
+#SBATCH -A bcpv-delta-gpu
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=2
+#SBATCH --gpus-per-node=2
+#SBATCH --time=48:00:00
+#SBATCH -J lig_46
+#SBATCH -o myjob.o%j
+#SBATCH -e myjob.e%j
+#SBATCH --mail-user=monsurat.lawal@gallaudet.edu
+#SBATCH --mail-type=all
+
+#Manage processing environment, load compilers and applications
+module purge
+module load cuda
+#module load gcc openmpi/5.0.2+cuda
+module list
+
+source /u/mlawal/amber22/amber.sh
+
+#Launch code
+pmemd.cuda -O -i step4.0_minimization.mdin -o step4.0_minimization.log -c step3_input.rst7 -p step3_input.parm7 -r step4.0_input.rst7 -ref step3_input.rst7
+pmemd.cuda -O -i step4.1_equilibration.mdin -o step4.1_equilibration.log -c step4.0_input.rst7 -p step3_input.parm7 -r step4.1_equilibration.rst7 -ref step4.0_input.rst7 -x step4.1_equilibration.nc
+mpirun -np 2 pmemd.cuda.MPI -O -i prod.in -o step4_production.log -c step4.1_equilibration.rst7 -p step3_input.parm7 -r step4_production.rst7 -x step4_production.nc

@@ -1,0 +1,6 @@
+parm step3*.parm7
+trajin step4_production.nc
+autoimage
+strip !(:1-225) outprefix stripped
+trajout plk1_bs1_ligXXX.dcd
+go

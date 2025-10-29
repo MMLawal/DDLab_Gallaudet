@@ -1,0 +1,16 @@
+receptor = rep.c7.pdbqt
+ligand = c*.pdbqt
+
+
+center_x = 40
+center_y = 46 
+center_z = 54
+
+size_x = 16
+size_y = 17
+size_z = 19
+
+
+num_modes = 5
+
+exhaustiveness= 48

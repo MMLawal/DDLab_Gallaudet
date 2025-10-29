@@ -1,0 +1,32 @@
+REMARK   1 File created by GaussView 6.0.16
+HETATM    1  N1  UNL     1      -1.063  -0.219  -1.102                       N
+HETATM    2  C1  UNL     1      -0.149   0.691  -0.396                       C
+HETATM    3  C2  UNL     1       0.379   0.002   0.876                       C
+HETATM    4  N2  UNL     1       0.576  -1.429   1.039                       N
+HETATM    5  N3  UNL     1       1.426  -1.458   2.155                       N
+HETATM    6  N4  UNL     1       1.379  -0.360   2.751                       N
+HETATM    7  N5  UNL     1       0.724   0.601   1.955                       N
+HETATM    8  C3  UNL     1       1.035   1.044  -1.316                       C
+HETATM    9  O1  UNL     1       0.874   1.075  -2.564                       O
+HETATM   10  O2  UNL     1       2.315   1.339  -0.752                       O
+HETATM   11  H1  UNL     1      -0.575  -1.054  -1.353                       H
+HETATM   12  H2  UNL     1      -1.406   0.228  -1.928                       H
+HETATM   13  H3  UNL     1      -0.671   1.585  -0.127                       H
+HETATM   14  H4  UNL     1       0.969  -1.862   0.228                       H
+HETATM   15  H5  UNL     1       2.200   1.728   0.118                       H
+END
+CONECT    1    2   11   12
+CONECT    2    3    8   13    1
+CONECT    3    4    7    2
+CONECT    4    5   14    3
+CONECT    5    6    4
+CONECT    6    7    5
+CONECT    7    3    6
+CONECT    8    9   10    2
+CONECT    9    8
+CONECT   10   15    8
+CONECT   11    1
+CONECT   12    1
+CONECT   13    2
+CONECT   14    4
+CONECT   15   10

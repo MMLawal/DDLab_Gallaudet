@@ -1,0 +1,16 @@
+receptor = 4hco_1.pdbqt
+ligand = c46a.pdbqt
+
+
+center_x = 21
+center_y = 14
+center_z = 27  
+
+size_x = 40
+size_y = 40
+size_z = 40
+
+
+num_modes = 5 
+
+exhaustiveness= 48
