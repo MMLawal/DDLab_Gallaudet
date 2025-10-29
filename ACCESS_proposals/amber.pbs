@@ -1,0 +1,87 @@
+text#PBS -N scale
+#PBS -o mpi_%j.out
+#PBS -M lawalmonsurat635@gmail.com
+#PBS -e mpi_%j.err
+#PBS -P HEAL1009
+#PBS -l select=1:ncpus=24:mpiprocs=24
+#PBS -l place=excl
+#PBS -l walltime=48:00:00
+#PBS -q smp
+#PBS -m be
+
+module purge
+module add gcc/4.9.0
+module add chpc/openmpi/1.8.8/gcc-4.9.0
+module add chpc/amber/20/cuda11.2/mpich-3.4.1/gcc-6.1.0  
+
+#variables
+export AMBERHOME=/apps/chpc/chem/amber/14_gpu
+
+pushd /mnt/lustre/users/fadeowo/
+exe=sander.MPI
+#exe=$AMBERHOME/bin/pmemd.MPI
+
+
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i min_classical.in -o min_classical.out -p nma_solvated.top -c nma_solvated.crd -r min_classical.rst
+mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i md_classical.in -o md_classical.out -p nma_solvated.top -c min_classical.rst -r md_classical.rst -x md_classical.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Partial_Mini.in -o Partial_Mini.out -p com_solvated.top -c com_solvated.crd -ref com_solvated.crd -r Partial_Mini.rst
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Full_Mini.in -o Full_Mini.out -p com_solvated.top -c Partial_Mini.rst -r Full_Mini.rst -inf Full_Mini.mdinfo
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Heating_Stage1.in -o Heating_Stage1.out -ref Full_Mini.rst -p com_solvated.top -c Full_Mini.rst -r Heating_Stage1.rst -x Heating_Stage1.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Heating_Stage2.in -o Heating_Stage2.out -ref Heating_Stage1.rst -p com_solvated.top -c Heating_Stage1.rst -r Heating_Stage2.rst -x Heating_Stage2.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Heating_Stage3.in -o Heating_Stage3.out -ref Heating_Stage2.rst -p com_solvated.top -c Heating_Stage2.rst -r Heating_Stage3.rst -x Heating_Stage3.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Heating_Stage4.in -o Heating_Stage4.out -ref Heating_Stage3.rst -p com_solvated.top -c Heating_Stage3.rst -r Heating_Stage4.rst -x Heating_Stage4.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Heating_Stage5.in -o Heating_Stage5.out -ref Heating_Stage4.rst -p com_solvated.top -c Heating_Stage4.rst -r Heating_Stage5.rst -x Heating_Stage5.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Heating_Stage6.in -o Heating_Stage6.out -ref Heating_Stage5.rst -p com_solvated.top -c Heating_Stage5.rst -r Heating_Stage6.rst -x Heating_Stage6.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i density.in -o density.out -ref Heating_Stage6.rst -p com_solvated.top -c Heating_Stage6.rst -r density.rst -x density.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i equil.in -o equil.out -ref density.rst -p com_solvated.top -c density.rst -r equil.rst -x equil.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_01.in -o Data_01.out -p com_solvated.top -c equil.rst -r Data_01.rst -x Data_01.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_02.in -o Data_02.out -p com_solvated.top -c Data_01.rst -r Data_02.rst -x Data_02.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_03.in -o Data_03.out -p com_solvated.top -c Data_02.rst -r Data_03.rst -x Data_03.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_04.in -o Data_04.out -p com_solvated.top -c Data_03.rst -r Data_04.rst -x Data_04.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_05.in -o Data_05.out -p com_solvated.top -c Data_04.rst -r Data_05.rst -x Data_05.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_06.in -o Data_06.out -p com_solvated.top -c Data_05.rst -r Data_06.rst -x Data_06.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_07.in -o Data_07.out -p com_solvated.top -c Data_06.rst -r Data_07.rst -x Data_07.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_08.in -o Data_08.out -p com_solvated.top -c Data_07.rst -r Data_08.rst -x Data_08.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_09.in -o Data_09.out -p com_solvated.top -c Data_08.rst -r Data_09.rst -x Data_09.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_10.in -o Data_10.out -p com_solvated.top -c Data_09.rst -r Data_10.rst -x Data_10.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_11.in -o Data_11.out -p com_solvated.top -c Data_10.rst -r Data_11.rst -x Data_11.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_12.in -o Data_12.out -p com_solvated.top -c Data_11.rst -r Data_12.rst -x Data_12.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_13.in -o Data_13.out -p com_solvated.top -c Data_12.rst -r Data_13.rst -x Data_13.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_14.in -o Data_14.out -p com_solvated.top -c Data_13.rst -r Data_14.rst -x Data_14.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_15.in -o Data_15.out -p com_solvated.top -c Data_14.rst -r Data_15.rst -x Data_15.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_16.in -o Data_16.out -p com_solvated.top -c Data_15.rst -r Data_16.rst -x Data_16.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_17.in -o Data_17.out -p com_solvated.top -c Data_16.rst -r Data_17.rst -x Data_17.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_18.in -o Data_18.out -p com_solvated.top -c Data_17.rst -r Data_18.rst -x Data_18.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_19.in -o Data_19.out -p com_solvated.top -c Data_18.rst -r Data_19.rst -x Data_19.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_20.in -o Data_20.out -p com_solvated.top -c Data_19.rst -r Data_20.rst -x Data_20.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_21.in -o Data_21.out -p com_solvated.top -c Data_20.rst -r Data_21.rst -x Data_21.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_22.in -o Data_22.out -p com_solvated.top -c Data_21.rst -r Data_22.rst -x Data_22.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_23.in -o Data_23.out -p com_solvated.top -c Data_22.rst -r Data_23.rst -x Data_23.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_24.in -o Data_24.out -p com_solvated.top -c Data_23.rst -r Data_24.rst -x Data_24.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_25.in -o Data_25.out -p com_solvated.top -c Data_24.rst -r Data_25.rst -x Data_25.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_26.in -o Data_26.out -p com_solvated.top -c Data_25.rst -r Data_26.rst -x Data_26.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_27.in -o Data_27.out -p com_solvated.top -c Data_26.rst -r Data_27.rst -x Data_27.mdcrd
+mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_28.in -o Data_28.out -p com_solvated.top -c Data_27.rst -r Data_28.rst -x Data_28.mdcrd
+mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_29.in -o Data_29.out -p com_solvated.top -c Data_28.rst -r Data_29.rst -x Data_29.mdcrd
+mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_30.in -o Data_30.out -p com_solvated.top -c Data_29.rst -r Data_30.rst -x Data_30.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_31.in -o Data_31.out -p com_solvated.top -c Data_30.rst -r Data_31.rst -x Data_31.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_32.in -o Data_32.out -p com_solvated.top -c Data_31.rst -r Data_32.rst -x Data_32.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_33.in -o Data_33.out -p com_solvated.top -c Data_32.rst -r Data_33.rst -x Data_33.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_34.in -o Data_34.out -p com_solvated.top -c Data_33.rst -r Data_34.rst -x Data_34.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_35.in -o Data_35.out -p com_solvated.top -c Data_34.rst -r Data_35.rst -x Data_35.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_36.in -o Data_36.out -p com_solvated.top -c Data_35.rst -r Data_36.rst -x Data_36.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_37.in -o Data_37.out -p com_solvated.top -c Data_36.rst -r Data_37.rst -x Data_37.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_38.in -o Data_38.out -p com_solvated.top -c Data_37.rst -r Data_38.rst -x Data_38.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_39.in -o Data_39.out -p com_solvated.top -c Data_38.rst -r Data_39.rst -x Data_39.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_40.in -o Data_40.out -p com_solvated.top -c Data_39.rst -r Data_40.rst -x Data_40.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_41.in -o Data_41.out -p com_solvated.top -c Data_40.rst -r Data_41.rst -x Data_41.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_42.in -o Data_42.out -p com_solvated.top -c Data_41.rst -r Data_42.rst -x Data_42.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_43.in -o Data_43.out -p com_solvated.top -c Data_42.rst -r Data_43.rst -x Data_43.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_44.in -o Data_44.out -p com_solvated.top -c Data_43.rst -r Data_44.rst -x Data_44.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_45.in -o Data_45.out -p com_solvated.top -c Data_44.rst -r Data_45.rst -x Data_45.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_46.in -o Data_46.out -p com_solvated.top -c Data_45.rst -r Data_46.rst -x Data_46.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_47.in -o Data_47.out -p com_solvated.top -c Data_46.rst -r Data_47.rst -x Data_47.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_48.in -o Data_48.out -p com_solvated.top -c Data_47.rst -r Data_48.rst -x Data_48.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_49.in -o Data_49.out -p com_solvated.top -c Data_48.rst -r Data_49.rst -x Data_49.mdcrd
+#mpirun -np 72 -machinefile $PBS_NODEFILE $exe -O -i Data_50.in -o Data_50.out -p com_solvated.top -c Data_49.rst -r Data_50.rst -x Data_50.mdcrd
+popd
