@@ -1,0 +1,5 @@
+#Set           LIG[D]   LIG[Slope] LIG[Intercept]    LIG[Corr] LIG[Label]
+       1      11.8321       7.0993      7784.9055       0.8860  LIG_AvgDr
+       2      -0.1783      -0.0357     10807.7955      -0.0199  LIG_AvgDx
+       3       0.9027       0.1805      5823.6964       0.1904  LIG_AvgDy
+       4      34.7720       6.9544     -8846.5865       0.8985  LIG_AvgDz

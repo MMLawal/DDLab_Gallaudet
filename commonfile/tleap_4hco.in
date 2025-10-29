@@ -1,0 +1,2920 @@
+xsedeu3211 - Darwin xsedeu3211@darwin.hpc.udel.edu Yusra2018Bushra2021#
+x-mlawal - anvil ssh x-mlawal@anvil.rcac.purdue.edu
+mlawal - ddlab summer2024
+
+mlawal - ssh -Y mlawal@login.delta.ncsa.illinois.edu
+/work/hdd/bcpv 
+
+squeue -umlawal -h -t pending,running -r | wc -l
+squeue -umlawal -h -t running -r | wc -l
+squeue -umlawal -h -t pending -r | wc -l
+
+/Volumes/share/Research/GR0133/Volumes/share/Research/GR0133/4hco_phos_pep
+smb://researchnas.gallaudet.edu/share
+
+24 
+17
+22
+45
+
+2370 - 4000
+
+598,622,638,649,671,695,711,723,789,810,817,836,843,864,881,937,948,964,971,987,1006,1063,1077,1101,1120,1139,1158,1224,1235,1254,1271,1292,1369,1383,1398,1409,1430,1449,2218,2237,2261,2275,2299,2319,2343,2392,2402,2421,2440,2476,2527,2538,2554,2571,2590,2604,2690,2704,2726,2745,2764,2783,2844,2854,2864,2880,2894,2915,3019,3039,3063,3077,3098
+
+
+598,622,638,649,671,695,711,723,789,810,817,836,843,864,881,937,948,964,971,987,1006,1063,1077,1101,1120,1139,1158,1224,1235,1254,1271,1292,1369,1383,1398,1409,1430,1449,2218,2237,2261,2275,2299,2319,2343,2392,2402,2421,2440,2476,2527,2538,2554,2571,2590,2604,2690,2704,2726,2745,2764,2783,2844,2854,2864,2880,2894,2915,3019,3039,3063,3077,3098
+
+0.15 Molar NaCl
+https://ambermd.org/tutorials/basic/tutorial8/index.php
+
+1,2,5,9
+
+tail -n 3631 tq1_4hco_0002_low.pdb > rec.pdb
+
+for i in `seq 1 5`; do reduce -Trim prot${i}_tq_bs3 > prot${i}-tq_bs3.pdb; done
+
+for i in `seq 1 5`; do cat prot${i}-tq_bs3.pdb lig.pdb > prot${i}-tq-bs3.pdb; done sed -e '3643,3872d' 4hco_1_000${i}_low_0001.pdb > prot${i}_tq_bs3.pdb; cd ../; done
+
+for i in `seq 4 7`; do cp step5_production.mdin meta.sh ../bs${i}_plx; done sed -i '' -e '3635,3747 d' rep.c${i}.pdb; done
+
+2036,2174d
+2187,2199d 
+2048,2060d
+
+CYS544, CYS573, 
+
+for i in `seq 1 46`; do cd lig${i}; sed -i 's/LIG A   2/LIG A 225/g' c_${i}.pdb; cd ../; done
+njix
+
+sed -n '4,1829p' all50_pbd_crystals.pdb > 1q4k.pdb
+
+4323422 to 4323466, and lig1 is 4323478
+
+CB of HIS168
+CB 170 lys
+cb ILE127
+CBleu120 to CBhis168 = 12.24 INITIAL VALUE
+PULL FROM 10 TO 25 
+
+
+tleap
+source leaprc.protein.ff19SB
+source leaprc.gaff
+source leaprc.water.tip3p
+LIG = loadmol2 lig.mol2 
+loadamberparams lig.frcmod
+check LIG
+saveoff LIG lig1.lib
+quit
+
+
+source leaprc.protein.ff19SB
+source leaprc.gaff
+source leaprc.water.tip3p
+loadamberparams frcmod.ionsjc_tip3p
+set default PBRadii mbondi2
+source leaprc.phosfb18
+loadamberparams frcmod.phosfb18
+loadoff phos_aminofb18.lib
+loadamberparams lig.frcmod
+loadoff lig1.lib
+loadamberparams nh3.frcmod
+loadoff nh3.lib
+addAtomTypes {
+        { "N"  "N" "sp3" }
+        { "C"  "C" "sp3" }
+}
+
+antechamber -i zzz_lig.pdb -fi pdb -o zzz_lig.mol2 -fo mol2 -j 5 -at gaff -c bcc -nc 0
+for i in `seq 1 46`; do cd lig${i}; parmchk2 -i lig.mol2 -f mol2 -o lig.frcmod; cd ../; done
+
+source leaprc.protein.ff19SB
+source leaprc.phosaa19SB
+source leaprc.gaff
+source leaprc.water.tip3p
+loadamberparams frcmod.ionsjc_tip3p
+LIG = loadmol2 lig.mol2
+loadamberparams lig.frcmod
+receptor = loadPDB 251_slt.pdb
+complex = combine {receptor LIG}
+set default PBRadii mbondi2
+saveAmberParm LIG lig.top lig.rst7
+saveAmberParm receptor rec.top rec.rst7
+saveAmberParm complex com.top com.rst7
+saveAmberParm complex step2_input.parm7 step2_input.rst7
+savepdb complex step2_input.pdb
+charge complex
+solvatebox complex TIP3PBOX 10 iso
+addionsRand complex Na+ 75.0 Cl- 75.0 
+saveAmberParm complex step3_input.parm7 step3_input.rst7
+savepdb complex step3_input.pdb
+quit
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import griddata
+
+# Load FES data
+data7 = np.loadtxt('fes_2d.dat', comments='#')
+
+# Extract unique values
+x = np.unique(data[:, 0]*10)  # Unique distance1 values
+y = np.unique(data[:, 1]*10)  # Unique distance2 values
+
+# Check for matching grid size
+if len(data) == len(y) * len(x):
+    z = data[:, 2].reshape(len(y), len(x))  # Reshape directly
+else:
+    # Interpolate if grid size doesn't match
+    X, Y = np.meshgrid(x, y)
+    Z = griddata((data[:, 0]*10, data[:, 1]*10), data[:, 2]/4.184, (X, Y), method='linear')
+    z = Z  # Use interpolated Z
+
+# Plot FES as a contour plot
+plt.figure(figsize=(8, 6))
+contour = plt.contourf(x, y, z, levels=20, cmap='viridis')
+cbar = plt.colorbar(contour)
+cbar.set_label('Free Energy (kJ/mol)', fontsize=12)
+
+# Labels and title
+plt.xlabel('Distance 1 (A)', fontsize=14)
+plt.ylabel('Distance 2 (A)', fontsize=14)
+plt.title('2D Free Energy Surface', fontsize=16)
+plt.grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+
+for i in `seq 1 5`; do cd plk1_r${i}; mv protXXX_c+9_5_gas.pdb prot${i}_c+9_5_gas.pdb; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv protXXX_c+9_5_solv.pdb prot${i}_c+9_5_solv.pdb; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv protXXX_c+9_5_solv.prmtop prot${i}_c+9_5_solv.prmtop; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv protXXX_c+9_5_solv.rst7 prot${i}_c+9_5_solv.rst7; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv protXXX_c+9_5.rst7 prot${i}_c+9_5.rst7; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv protXXX_c+9_5.prmtop prot${i}_c+9_5.prmtop; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv recXXX_c+9_5.pdb rec${i}_c+9_5.pdb; cd ../; done
+
+
+1835, 2066 d
+2100, 2132 d
+
+lie :1-224 :225 out lie1.dat cutvdw 12.0 cutelec 12.0
+lie :42 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :43 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :44 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :120 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :121 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :123 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :163 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :168 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+lie :170 :225 out lie.dat cutvdw 12.0 cutelec 12.0
+
+
+source leaprc.protein.ff19SB
+source leaprc.phosaa19SB
+source leaprc.gaff
+source leaprc.water.tip3p
+loadamberparams frcmod.ionsjc_tip3p
+receptor = loadPDB 1kw0_r408q.pdb
+set default PBRadii mbondi2
+saveAmberParm receptor rec.top rec.rst7
+saveAmberParm receptor step2_input.parm7 step2_input.rst7
+savepdb receptor step2_input.pdb
+charge receptor
+solvatebox receptor TIP3PBOX 12 iso
+addionsRand receptor Na+ 80.0 Cl- 75.0
+saveAmberParm receptor step3_input.parm7 step3_input.rst7
+savepdb receptor step3_input.pdb
+quit
+
+WT, R158Q, R176Q, R243Q, R252Q, R261Q, R408Q
+      41,    59,   126,   135,	144,   291
+
+
+saveAmberParm LIG lig.top lig.rst7
+saveAmberParm receptor rec.top rec.rst7
+saveAmberParm complex com.top com.rst7
+quit
+
+for i in `seq 1 5`; do cd plk1_r${i}; cp *gas* rec.pdb; cd ../; done
+for i in `seq 1 5`; do sed '1834,2107 d' rec${i}_plx2_1.pdb > plk1_r${i}/rec.pdb; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv rec1.pdb rec.pdb; cd ../; done
+for i in `seq 1 5`; do cp lig.lib lig.fr* c+9_${i}; done
+for i in `seq 1 5`; do cd plk1_r${i}; tleap -s -f ../tleap.in; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; MMPBSA.py -O -i mmpbsa.in -cp com.top -rp rec.top -lp lig.top -y *.dcd -o mmpbsa.dat > mmpbsa.log; cd ../; done
+
+3634,3675 d
+
+savepdb receptor rec_gas.pdb
+
+check :1-225 skipbadframes silent
+
+39-58 bs6
+576, 577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 587, 588, 589, 590, 591, 592, 593, 594, 595, 0, 898, 899, 900, 901, 902, 903, 904, 905, 906, 907, 908
+
+39-59 bs6
+576, 577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 587, 588, 589, 590, 591, 592, 593, 594, 595, 0, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920
+
+40-189 bs3
+596, 597, 598, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 0, 3017, 3018, 3019, 3020, 3021, 3022, 3023, 3024, 3025, 3026, 3027, 3028, 3029, 3030, 3031, 3032, 3033, 3034, 3035, 3036
+
+
+bs5
+2932, 2933, 2934, 2935, 2936, 2937, 2938, 2939, 2940, 2941, 2942, 2943, 0, 3257, 3258, 3259, 3260, 3261, 3262, 3263, 3264, 3265, 3266, 3267 
+
+
+62-113 bs7
+946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 0, 1769, 1770, 1771, 1772, 1773, 1774, 1775, 1776, 1777, 1778, 1779, 1780, 1781, 1782, 1783, 1784, 1785, 1786, 1787, 1788, 1789, 1790, 1791, 1792
+
+for i in `seq 1 5`; do sed '2100, 2132 d' rec${i}_c-9_2.pdb; done
+for i in `seq 10 99`; do cd run0${i}; sed '3567, 3829 d' plx2_plk3_00${i}_low.pdb > plx2_plk3.pdb; cd ../; done
+for i in `seq 100 100`; do cd run0${i}; sed '3567, 3829 d' plx2_plk3_0${i}_low.pdb > plx2_plk3.pdb; cd ../; done
+
+for i in `seq 1 100`; do cd run0${i}; reduce -Trim plx_4hco.pdb > 4hco_plx.pdb; cd ../; done
+
+for i in `seq 1 100`; do cp ./common_file/*.in run0${i}; done
+
+for i in `seq 1 100`; do cd run0${i}; tleap -s -f tleap.in > leap.log; cd ../; done
+
++2348039355282 oga driver
+08067199008 Mr Macaroni
+ 
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Updated data
+data = {
+    "TQ (110)": [35, 39, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 4, 19, 0, 0, 0, 0, 0, 0],
+    "PLX (90)": [0, 14, 0, 0, 0, 0, 0, 19, 33, 0, 0, 0, 0, 0, 0, 0, 4, 0, 15, 0, 0, 3],
+    "PLX2 (89)": [0, 10, 0, 4, 0, 0, 0, 4, 20, 3, 4, 3, 0, 0, 0, 0, 7, 0, 3, 0, 4, 14],
+    "PLX23 (91)": [0,8,0,3,0,0,0,0,0,0,8,5,26,4,0,4,22,12,0,0,0,0],
+    "–(–)9* at BS1-2 (314)": [9,116,28,71,10,3,18,34,4,0,3,0,0,0,7,0,9,0,0,0,0,0],
+    "–(+)9* at BS1-2 (281)": [0,99,5,89,29,0,28,13,0,0,16,0,0,0,0,0,3,0,0,0,0,0],
+    "Allopole-A (114)": [13,27,0,0,0,0,0,27,3,15,0,0,0,0,0,3,4,0,11,4,0,0]
+}
+
+labels = [
+    "LYS413", "TRP414", "VAL415", "ASP416", "TYR417", "TYR481", "TYR485",
+    "LEU490", "LEU491", "ALA493", "ARG516", "THR517", "ARG518", "ALA520",
+    "ILE521", "ASN533", "PHE535", "GLN536", "HIS538", "LYS540", "GLU555", "ARG557"
+]
+
+# Convert percentage strings to float values
+for key in data:
+    data[key] = [float(str(v).replace('%', '')) for v in data[key]]
+
+# Plot settings
+bar_width = 0.1
+index = np.arange(len(labels))
+
+# Create figure and axis
+fig, ax = plt.subplots(figsize=(18, 10))
+# Create figure and axis
+fig, ax = plt.subplots(figsize=(18, 10))
+
+# Plot bars for each column of data
+for i, (key, values) in enumerate(data.items()):
+    ax.bar(index + i * bar_width, values, bar_width, label=key)
+
+# Add labels and title
+ax.set_xlabel('Residues')
+ax.set_ylabel('H-Bond Occupancy Percentage (%)')
+#ax.set_title('Bar Chart of Residue Interaction Percentages')
+ax.set_xticks(index + bar_width * 3)
+ax.set_xticklabels(labels, rotation=90)
+
+# Add legend
+ax.legend()
+
+# Show plot
+plt.tight_layout()
+plt.savefig('bs1-hb.png', dpi=500)
+plt.show()
+
+α-amylase 	α-amylase–Acarbose	α-amylase–GA	α-amylase–PCA	α-amylase–PCA_2ruS	α-amylase–PCA_2ru	α-amylase–PCA_2ruN
+
+
+for tq_plk3 strip
+
+parm step3*.parm7
+trajin step4_production.nc
+autoimage
+strip !(:1-225) outprefix lig24
+trajout plk1_bs7_lig24.dcd
+go
+
+diffusion :LIG out tq1.dat LIG diffout tq1_dc.dat
+
+trajin ASMD_*/*.nc
+autoimage
+center :1-225 mass
+strip !(:1-225) outprefix stripped
+trajout smd_10A_prot1_tq3.dcd
+go
+
+
+
+trajin prod*.nc
+autoimage
+center :1-225 mass
+strip !(:1-225) outprefix stripped
+trajout protXXX_tq-bs3.dcd
+go
+
+for i in `seq 1 5`; do cd bs3-tq${i}; cpptraj *_solv.prmtop ../strip.in; cd ../; done
+for i in `seq 1 5`; do cd bs3-tq${i}; mv protXXX_tq.dcd prot${i}_tq-bs3.dcd; cd ../; done
+
+
+367-567
+
+data1 = np.loadtxt('4hco_pep.dat')
+data2 = np.loadtxt('tq2.dat')
+data5 = np.loadtxt('tq3.dat')
+data6 = np.loadtxt('tq4.dat')
+data7 = np.loadtxt('tq5.dat')
+data8 = np.loadtxt('c+9_bs1.2.dat')
+
+cpptraj prot*_tq*_solv.prmtop
+
+trajin prod*.nc
+autoimage
+center :1-225 mass
+strip !(:1-225) outprefix smd_stripped
+trajout prot1_tq3_smd.dcd
+go
+
+cpptraj stri
+
+trajin *.dcd
+lie :225 :1-224 out lie.dat cutvdw 12.0 cutelec 12.0
+go
+
+for i in `seq 1 5`; do cd plk1_r${i}; cpptraj strip* ../lie.in ; cd ../; done
+for i in `seq 1 5`; do cd plk1_r${i}; mv protXXX_* prot${i}_*; cd ../; done
+
+
+plk1_tq1
+
+rms first out pbd_phosBS_rmsd.dat :41-44,123,16-173,181,183
+run
+rms first out pbd_tyrBS_rmsd.dat :46-54,107-120
+run
+rms first out pbd_pyrrBS_rmsd.dat :44-48,120-123,145-152,164-170
+run
+
+
+plt.plot(data1[:,0],data1[:,1])
+plt.plot(data2[:,0],data2[:,1])
+plt.plot(data3[:,0],data3[:,1])
+plt.plot(data4[:,0],data4[:,1])
+plt.show()
+
+trajin *.dcd
+rms first out 4hco_rmsd.dat :1-224
+rms first out plx22_1_rmsd.dat :21-102,121-203@CA
+rms first out plx22_1_rmsd.dat :1-20,204-224,103-120@CA
+rms first out plx22_1_rmsd.dat :41-44,123,16-173,181,183
+rms first out plx22_1_rmsd.dat :46-54,107-120
+rms first out plx22_1_rmsd.dat :44-48,120-123,145-152,164-170
+rms first out plx22_1_rmsd.dat :36-40,170,172,181,183,187,189
+quit
+
+parm step3_input.parm7
+reference com.rst7 parm com.top [ref]
+trajin plk1_allopoleA.dcd
+rms Toref ref [ref] :1-224 :1-224 out plk1_allopoleA_rmsd.dat
+go
+
+distance DIST :42-119 :1-36,142-224 out pbd_domain_dist.dat
+2781-2791
+
+import numpy as np
+data = np.loadtxt("tq-bs3-pep_smd_lie.dat")
+elec_E = data[:,1]
+vdw_E = data[:,2]
+tot_E = elec_E + vdw_E
+np.savetxt('tq-bs3-pep_to_lie.dat', tot_E, '%s')
+
+Hash Set Test Result: False
+Searching in the Hash Set Took: 2.5033950805664062e-05
+List Test Result: False
+Searching in the List Took: 0.10092020034790039
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+data1 = np.loadtxt("wt_bias1.dat")[:,1]
+data2 = np.loadtxt("wt_bias2.dat")[:,1]
+data3 = np.loadtxt("wt_bias3.dat")[:,1]
+data4 = np.loadtxt("wt_bias4.dat")[:,1]
+data5 = np.loadtxt("wt_bias5.dat")[:,1]
+
+data1 = data1[:,2] + data1[:,1]
+data2 = data2[:,2] + data2[:,1]
+data3 = data3[:,2] + data3[:,1]
+data4 = data4[:,2] + data4[:,1]
+data5 = data5[:,2] + data5[:,1]
+
+data1 = np.loadtxt('lie_tot_plk1_tq1.dat')
+data2 = np.loadtxt('../tq2/lie_tot_plk1_tq2.dat')
+data3 = np.loadtxt('../tq3/lie_tot_plk1_tq3.dat')
+data4 = np.loadtxt('../tq4/lie_tot_plk1_tq4.dat')
+data5 = np.loadtxt('../tq5/data5.dat')
+data6 = np.loadtxt('lie_other.dat')
+
+np.savetxt('plk1_plx_1_lie.dat', data1, '%s')
+np.savetxt('plk1_plx_2_lie.dat', data2, '%s')
+np.savetxt('plk1_plx_3_lie.dat', data3, '%s')
+np.savetxt('plk1_plx_4_lie.dat', data4, '%s')
+np.savetxt('plk1_plx_5_lie.dat', data5, '%s')
+
+data1 = np.loadtxt('bs1/rmsf.dat')
+data2 = np.loadtxt('../plx_pbd_BSs/plx_bs1/rmsf.dat')
+data3 = np.loadtxt('bs2/rmsf.dat')
+data4 = np.loadtxt('../plx23_pbd_/plx23_bs1/rmsf.dat')
+data5 = np.loadtxt('../plx_pbd_BSs/bs2/rmsf.dat')
+data6 = np.loadtxt('../plx2_pbd_/bs2/rmsf.dat')
+data7 = np.loadtxt('../plx22_pbd_/bs2/rmsf.dat')
+data8 = np.loadtxt('../plx23_pbd_/bs2/rmsf.dat')
+data9 = np.loadtxt("../apo/rmsf.dat")
+data10 = np.loadtxt("bs3/rmsf.dat")
+data11 = np.loadtxt('../plx_pbd_BSs/bs3/rmsf.dat')
+data12 = np.loadtxt('../plx22_pbd_/bs3/rmsf.dat')
+
+#plt.figure(1, figsize=(10,8))
+sns.distplot(data1[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'TQ in BS6 (11766±9)')
+sns.distplot(data2[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX in BS6 (11841±7)')
+sns.distplot(data3[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX2 in BS6 (11813±6)')
+sns.distplot(data4[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX22 in BS6 (11859±6)')
+sns.distplot(data5[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX23 in BS6 (11931±6)')
+sns.distplot(data6[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'TQ in BS7 (12046±7)')
+sns.distplot(data7[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX in BS7 (11655±8)')
+sns.distplot(data9[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX22 in BS7 (12039±8)')
+sns.distplot(data10[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX23 in BS7 (11768±6)')
+#sns.distplot(data11[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX in BS5 (11553±7)')
+#sns.distplot(data12[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX22 in BS5 (12228±6)')
+plt.legend()
+plt.xlabel('SASA (Å²)')
+plt.show()
+
+
+plt.plot(x, y, color='k', label = '2-Bromopropane to Propene')
+plt.legend(prop={'size': 12})
+plt.ylabel('Energy (Hartree)', fontweight='bold', fontsize='12')
+plt.xlabel('Reaction Coordinate (H->OH)', fontweight='bold', fontsize='12')
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+#plt.savefig("int_e.png", dpi=500)
+plt.figure(1, figsize=(10,8))
+plt.show()
+sns.distplot(x, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'BS2_PBD-TQ', color = 'cyan')
+plt.plot(data1[:,0],data1[:,1], color = 'cyan')
+plt.plot(data1[:,0],data2[:,1], color = 'magenta')
+plt.plot(data1[:,0],data3[:,1], color = 'orange')
+plt.plot(data1[:,0],data4[:,1], color = 'pink')
+plt.plot(data1[:,0],data1[:,1], color = 'gray')
+sns.distplot(data1, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'PBD1', color = 'cyan')
+plt.legend(prop={'size': 12})
+sns.distplot(data1[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'TQ in BS1')
+sns.distplot(data2[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'PLX in BS1')
+sns.distplot(data4[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'PLX23 in BS1')
+sns.distplot(data3[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'TQ in BS2')
+sns.distplot(data5[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'PLX in BS2')
+plt.legend()
+plt.show()
+
+data1 = np.loadtxt('bs1/surf.dat')
+data2 = np.loadtxt('../plx_pbd_BSs/plx_bs1/surf.dat')
+data3 = np.loadtxt('bs2/surf.dat')
+data4 = np.loadtxt('../plx23_pbd_/plx23_bs1/surf.dat')
+data5 = np.loadtxt('../plx_pbd_BSs/bs2/surf.dat')
+data6 = np.loadtxt('../plx2_pbd_/bs2/surf.dat')
+data7 = np.loadtxt('../plx22_pbd_/bs2/surf.dat')
+data8 = np.loadtxt('../plx23_pbd_/bs2/surf.dat')
+data9 = np.loadtxt("../apo/surf.dat")
+data10 = np.loadtxt("bs3/surf.dat")
+data11 = np.loadtxt('../plx_pbd_BSs/bs3/surf.dat')
+data12 = np.loadtxt('../plx22_pbd_/bs3/surf.dat')
+
+sns.distplot(data9[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'Apo (11788±6)', color = 'black')
+sns.distplot(data1[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'TQ in BS1 (12043±5)')
+sns.distplot(data2[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX in BS1 (11888±6)')
+sns.distplot(data4[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX23 in BS1 (11801±7)')
+sns.distplot(data3[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'TQ in BS2 (11844±7)')
+sns.distplot(data5[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX in BS2 (12024±7)')
+sns.distplot(data6[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX2 in BS2 (11939±6)')
+sns.distplot(data7[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX22 in BS2 (12107±7)')
+sns.distplot(data8[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX23 in BS2 (11820±7)')
+sns.distplot(data10[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'TQ in BS3 (11854±6)')
+sns.distplot(data11[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX in BS3 (11553±7)')
+sns.distplot(data12[:,1], hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label = 'PLX22 in BS3 (12228±6)', color='gray')
+plt.legend()
+plt.xlabel('SASA (Å²)')
+plt.show()
+
+
+
+
+import numpy as np
+
+def combine_datasets(filenames):
+  """
+  Combines multiple datasets (x and y data) into a single dataset.
+
+  Args:
+      filenames (list): A list of strings representing the filenames of the datasets.
+
+  Returns:
+      tuple: A tuple containing two NumPy arrays. The first array contains the combined x data,
+              and the second array contains the combined y data.
+  """
+
+  # Initialize empty lists for combined data
+  combined_x = []
+  combined_y = []
+
+  # Loop through each filename
+  for filename in filenames:
+    # Load data from each file
+    data = np.loadtxt(filename)
+
+    # Separate x and y data
+    x = data[:, 0]
+    y = data[:, 1]
+
+    # Append data to combined lists
+    combined_x.extend(x)
+    combined_y.extend(y)
+
+  # Convert lists to NumPy arrays
+  combined_x = np.array(combined_x)
+  combined_y = np.array(combined_y)
+
+  return combined_x, combined_y
+
+# Example usage
+filenames = ["wt_bias1.dat", "wt_bias2.dat", "wt_bias3.dat", "wt_bias4.dat", "wt_bias5.dat", "wt_bias6.dat"]
+combined_x, combined_y = combine_datasets(filenames)
+
+# Now you can use the combined_x and combined_y arrays for further analysis or plotting
+print(combined_x.shape)
+print(combined_y.shape)
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import xdrlib
+import MDAnalysis as mda
+from shapeGMMTorch import torch_sgmm
+import torch
+
+#load trajectory
+prmtopFileName = "com.pdb"
+trajFileName = "../tq1/ana*/*dcd"
+coord = md.Universe(prmtopFileName,trajFileName)
+print("Number of atoms in trajectory:", coord.atoms.n_atoms)
+print("Number of frames in trajectory:", coord.trajectory.n_frames)
+# make atom selection
+atomSel = coord.select_atoms('name C N CA')
+print("Number of atoms in selection:", atomSel.n_atoms)
+# create traj data of selection
+traj_data = np.empty((coord.trajectory.n_frames,atomSel.n_atoms,3),dtype=float)
+#loop traj
+for ts in coord.trajectory:
+    traj_data[ts.frame,:] = atomSel.positions
+
+# scripts contains a built-in CV routine
+from shapeGMMTorch import scripts
+
+#scan from 1 to 10 clusters (11-1=10, 1 goes to training).
+# define cluster array
+cluster_array = np.arange(1,11,1).astype(int)
+
+# uniform weights
+train, cv = scripts.cross_validate_cluster_scan(traj_data, 10000, covar_type="kronecker", cluster_array = cluster_array, n_training_sets=3, n_attempts = 10, dtype=torch.float32, device=torch.device("cpu"))
+
+# shapeGMMTorch plots has a built-in plot function for this type of plot
+from shapeGMMTorch import plots
+# also need to load matplotlib
+import matplotlib.pyplot as plt
+%matplotlib inline
+# create figure
+fig, ax = plt.subplots(1,2,figsize=(8,4), dpi= 120, facecolor='w', edgecolor='k',sharex=True,sharey=True)
+# Uniform Weights
+ax[0].set_title("Uniform",fontsize=12)
+plots.plot_log_likelihood_with_dd(ax[0],cluster_array,train,cv,fontsize=12,ylabel1=True,ylabel2=False,xlabel=True)
+plt.tight_layout()
+plt.savefig('prob_BB_apo.png' dpi=500)
+
+import numpy as np
+import matplotlib.pyplot as plt
+import xdrlib
+import MDAnalysis as mda
+u = mda.Universe(prmtopFileName,trajFileName)
+MSD = msd.EinsteinMSD(u, select='all', msd_type='xyz', fft=True)
+MSD.run()
+msd =  MSD.results.timeseries
+
+fig = plt.figure()
+ax = plt.axes()
+ax.plot(lagtimes, msd, c="black", marker="_", label='3D random walk')
+exact = lagtimes*6
+ax.plot(lagtimes, exact, c="blue", marker="_", label='$y=2 D\tau$')
+plt.savefig('tq1_msd.png', dpi=500)
+
+displot
+sns.displot(data3, kind='kde', label = 'BS1_PLK1-TQ', color = 'cyan')
+
+
+
+import sklearn.discriminant_analysis as lda
+
+# Load the dataset
+data = pd.read_csv('iris.csv')
+
+# Split the data into features and labels
+features = data.iloc[:, :-1]
+labels = data.iloc[:, -1]
+
+# Create an LDA model
+lda_model = lda.LinearDiscriminantAnalysis()
+
+# Fit the model to the data
+lda_model.fit(features, labels)
+
+# Predict the labels for new data
+new_features = pd.DataFrame({'sepal_length': [5.1, 5.0], 'sepal_width': [3.5, 3.5], 'petal_length': [1.4, 1.4], 'petal_width': [0.2, 0.2]})
+
+new_labels = lda_model.predict(new_features)
+
+print(new_labels)
+
+
+##Follow the installation instructions patiently
+#Autodock Vina installation on Mac
+https://bioinformaticsreview.com/20220117/tutorial-how-to-install-autodock-vina-on-mac-os/
+#Racoon
+https://autodock.scripps.edu/resources/raccoon/
+/Users/Shared/MGLTools/1.5.7/bin/pythonsh raccoon.py
+#blind docking on Vina
+https://bioinformaticsreview.com/20190501/how-to-perform-blind-docking-using-autodock-vina/
+#openbabel install
+https://open-babel.readthedocs.io/en/latest/Installation/install.html
+
+import sys
+import numpy as np
+import re
+
+input_filename = sys.argv[1]
+output_filename = sys.argv[2]
+
+def extract_text(input_filename, start_string, end_string):
+    with open(input_filename, "r") as f:
+        text = f.read()
+    return re.findall(start_string + "(.*?)" + end_string, text, re.DOTALL)
+
+if __name__ == "__main__":
+    filename = input_filename
+    start_string = "MODEL 1"
+    end_string = "MODEL 2"
+    text = extract_text(input_filename, start_string, end_string)
+#with open(output_filename, "w") as f:
+    #f.write(text)
+    np.savetxt(output_filename, text, "%s")
+#    print(text)
+
+
+3v 79 allopole an329 commonfiles d116 mcc1019 polotyrin poloxin2 t521 zinc3376 4v abbapolin12 allopole-a aristolactam cpd161 kbjk557 poloppinII poloxin poloxipan tq
+
+cd data01
+mkdir rep_structures
+for i in `seq 1 183`; do python3 trim_data.py c${i}.pdbqt c${i}_m1.pdbqt; done
+for i in `seq 1 183`; do sed -n '2p' c${i}_m1.pdbqt > result${i}; done
+cat result* > dock_result.txt
+mv c*_m1.pdbqt rep_structures
+vi dock_result.txt
+rm c*.*
+re result*
+
+
+1.3225,0.7017,3.5216,2.1907,1.6511,2.3507
+
+
+#loading python libraries
+import numpy as np
+np.bool = np.bool_
+import pyemma
+pyemma.__version__
+import glob
+import pyemma.coordinates as coor
+import pyemma.msm as msm
+import pyemma.plots as mplt
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+import pyemma.coordinates as coor
+import sys
+import shutil
+import os
+from pyemma.util.contexts import named_temporary_file
+import matplotlib.cm as cm
+from collections import defaultdict
+#loading files  
+trajfile = []
+trajfile.append('prot1.dcd'.format())
+isfile = [os.path.isfile(f) for f in trajfile]
+trajfile = np.array(trajfile)[isfile]
+trajfile = trajfile.tolist()
+topfile = 'rec.pdb'
+#Get names of the trajectory files and topology files and save to metatrajectory
+np.savez('trajectory_files.npz',files=trajfile,top=topfile)
+traj_npz = np.load('trajectory_files.npz')
+#featurize
+feat = coor.featurizer(topfile)
+feat.add_minrmsd_to_ref(topfile) #minimum RMSD
+region_1 = [i for i in range(204,224)] #alpha 3
+region_2 = [i for i in range(100,120)] #alpha 1
+pairs =[]
+for i in region_1:
+    for j in region_2:
+        if i>j:
+            pairs.append([i,j])
+pairs=np.array(pairs)
+feat.add_residue_mindist(pairs,periodic=False) 
+#minimum distance between pairs
+X = coor.load(trajfile, feat)
+#save trajectory with features selected
+trans_obj = coor.tica(X,dim=2)
+Y = trans_obj.get_output()
+#addibg sec structure info
+data = np.loadtxt('total_y.out')
+extended = data[:,1]
+bridge = data[:,2]
+three = data[:,3]
+alpha = data[:,4]
+pi =data[:,5]
+turn = data[:,6]
+bend = data[:,7]
+helix = [0]*len(pi)
+for i in range(len(pi)):
+    b=three[i]
+    c=alpha[i]
+    d=pi[i]
+    helix[i]=b+c+d
+other = [0]*len(pi)
+for i in range(len(pi)):
+    b=bridge[i]
+    c=turn[i]
+    d=bend[i]
+    other[i]=b+c+d
+helix = np.array(helix)
+beta = np.array(extended)
+other=np.array(other)
+x=np.hstack(Y)
+x.shape
+Y=np.column_stack((x,helix)) 
+Y = np.column_stack((Y,beta))
+Y = np.column_stack((Y,other))
+#clustering
+ncluster = 1000
+clustering = coor.cluster_kmeans(Y, k=ncluster, max_iter=200)
+dtrajs = clustering.dtrajs
+#tiCA graphs
+from matplotlib import pyplot as plt
+fig,ax=plt.subplots(1,2,figsize=(15,3), sharex=True, sharey=True)
+cc_x = clustering.clustercenters[:,0] 
+cc_y = clustering.clustercenters[:,1] 
+pyemma.plots.plot_free_energy(np.vstack(Y)[:, 0], np.vstack(Y)[:, 1],ax=ax[0], cbar=True)
+ax[1].scatter(cc_x,cc_y,c=clustering.clustercenters[:,2],cmap='gnuplot', marker='o',vmin=0,vmax=0.6) #creates scatterplot of the cluster centers with their associated helical content
+ax[1].set_xlabel('Helix')
+ax[2].scatter(cc_x,cc_y,c=clustering.clustercenters[:,3],vmin=0,vmax=0.6,
+cmap='gnuplot',marker='o') #creates scatterplot of the cluster centers with their associated beta content
+ax[2].set_xlabel('Beta')
+c=ax[3].scatter(cc_x,cc_y,c=clustering.clustercenters[:,4],cmap='gnuplot',
+marker='o',vmin=0,vmax=0.6) #creates scatterplot of the cluster centers with their associated bend, turn, and unformed content
+ax[3].set_xlabel('Other (includes bend, turn, and none)')
+plt.colorbar(c,ax=ax[3])
+plt.tight_layout()
+plt.savefig('./ss_colored.png',dpi=300)
+#msm
+X = coor.load(trajfile, feat)
+trans_obj = coor.tica(X)
+Y = trans_obj.get_output()
+ncluster = 1000
+clustering = coor.cluster_kmeans(Y, k=ncluster, max_iter=200)
+dtrajs = clustering.dtrajs
+its = pyemma.msm.its(dtrajs, lags=[1, 2, 5, 10], errors='bayes')
+pyemma.plots.plot_implied_timescales(its, units='step')
+plt.savefig("its.png",dpi=300)
+#to predict nstates
+M = msm.estimate_markov_model(dtrajs,2)
+plt.plot(M.timescales(), linewidth=0, marker='o')
+plt.xlabel('index')
+plt.ylabel('timescale') 
+plt.savefig('./implied_timescale_spectral_analysis.png')
+pyemma.plots.plot_cktest(M.cktest(2))
+plt.savefig('./cktest.png')
+#print state
+print('fraction of states used = ', M.active_state_fraction)
+print('fraction of counts used = ', M.active_count_fraction)
+#states distribution
+nstates=2
+M.pcca(nstates)
+pcca_dist = M.metastable_distributions
+pcca_samples = M.sample_by_distributions(M.metastable_distributions, 1)
+torsions_source = pyemma.coordinates.source(trajfile, feat)
+pyemma.coordinates.save_trajs(torsions_source,pcca_samples,
+    outfiles=['pcca{}-samples.pdb'.format(n + 1)
+              for n in range(M.n_metastable)])
+from itertools import product
+mfpt = np.zeros((nstates, nstates))
+for i, j in product(range(nstates), repeat=2):
+    mfpt[i, j] = M.mfpt(
+        M.metastable_sets[i],
+        M.metastable_sets[j])
+from pandas import DataFrame
+mfpt = mfpt*100/1e6
+inverse_mfpt = np.zeros_like(mfpt)
+nz = mfpt.nonzero()
+inverse_mfpt[nz] = 1.0 / mfpt[nz]
+print('MFPT / ns:')
+DataFrame(np.round(mfpt, decimals=2), index=range(1, nstates + 1), 
+columns=range(1, nstates + 1))
+#splicing
+M.metastable_assignments.shape #used to figure out the splicing 
+tica=Y[0]
+fig,ax=plt.subplots(1,2,figsize=(20,10), sharex=True, sharey=True)
+#ax.tick_params(direction="in", bottom=False, top=False, left=False, right=False)
+ax[0].scatter(tica[0:733,0][M.metastable_assignments==0],
+tica[0:733,1][M.metastable_assignments==0])#the slicing was used to adjust the size
+ax[0].set_xlabel('state 1',size=10)
+ax[1].scatter(tica[0:733,0][M.metastable_assignments==1],
+tica[0:733,1][M.metastable_assignments==1],c='red')
+ax[1].set_xlabel('state 2',size=10)
+ax[2].scatter(tica[0:733,0][M.metastable_assignments==2],
+tica[0:733,1][M.metastable_assignments==2],c='green')
+plt.savefig('msm_cluster.png', dpi=300)
+#creates the transition graph
+fig,ax=plt.subplots(1,1,figsize=(10,10))
+tica_concatenated=np.concatenate(Y)
+state_labels=['1','2','3','4']
+highest_membership = M.metastable_distributions.argmax(1)
+coarse_state_centers = np.array([[-.7, -1.5], [-2,.8],[-0.5,-0.1],[-2.7,-1.7]])
+size = np.array([0.0005,0.0005,0.0005,0.0005])
+colors=('b','r','g','m')
+ax.set_xlabel('tica1')
+ax.set_ylabel('tica2')
+ax.set_xlim(tica_concatenated[:,0].min(), tica_concatenated[:,0].max())
+ax.set_ylim(tica_concatenated[:,1].min(), tica_concatenated[:,1].max())
+ax.scatter(tica[0:620,0][M.metastable_assignments==0],
+tica[0:620,1][M.metastable_assignments==0],label='State 1',alpha=0.3)
+ax.scatter(tica[0:620,0][M.metastable_assignments==1],
+tica[0:620,1][M.metastable_assignments==1],c='red',label='State 2',alpha=0.3)
+ax.scatter(tica[0:620,0][M.metastable_assignments==2],
+tica[0:620,1][M.metastable_assignments==2],c='green',label='State 3',alpha=0.3)
+ax.scatter(tica[0:620,0][M.metastable_assignments==3],
+tica[0:620,1][M.metastable_assignments==3],c='purple',label='State 4',alpha=0.3)
+pyemma.plots.plot_network(
+    inverse_mfpt,
+    pos=coarse_state_centers[:,:2],
+    arrow_label_format='%.1f ns',
+    arrow_labels=mfpt,
+    arrow_scale=1.5,
+    state_colors=colors,
+    state_sizes=size,
+    ax=ax,
+    state_labels=range(1, nstates + 1),
+    size=10,alpha=1);
+plt.legend()
+plt.savefig('transition_graph.png',dpi=300)
+
+#featurize using pair rmsd
+feat = coor.featurizer(topfile)
+feat.add_minrmsd_to_ref(topfile) #minimum RMSD
+region_1 = [i for i in range(204,224)]
+region_2 = [i for i in range(100,120)]
+region_3 = [i for i in range(1,20)]
+pairs =[]
+pairs_1 =[]
+pairs_2 =[]
+for i in region_1:
+    for j in region_2:
+        for k in region_3:
+            if i>j:
+                pairs.append([i,j])
+                if i>k:
+                    pairs_1.append([i,k])
+                    if j>k:
+                        pairs_2.append([k,j])
+
+pairs=np.array(pairs)
+pairs_1=np.array(pairs_1)
+pairs_2=np.array(pairs_2)
+feat.add_residue_mindist(pairs,periodic=False)
+feat.add_residue_mindist(pairs_1,periodic=False)
+feat.add_residue_mindist(pairs_2,periodic=False)
+
+
+bs1 - 36, 37, 38, 130, 134, 157, 159, 174, 176, 177
+bs2 - 27, 182, 184, 188, 189, 190, 203, 205
+bs3 - 39, 40, 58, 59, 122, 125, 126, 127
+bs4 - 56, 60, 74, 76, 78, 113, 114, 117 
+bs5 - 43, 44, 120, 121, 123, 163, 168, 170, 187
+
+trajin md_tq.xtc
+distance S1 :36, 37, 38, 130, 134, 157, 159, 174, 176, 177 :27, 182, 184, 188, 189, 190, 203, 205 out pbd_tq_cavity_dist.dat
+distance S2 :36, 37, 38, 130, 134, 157, 159, 174, 176, 177 :39, 40, 58, 59, 122, 125, 126, 127 out pbd_tq_cavity_dist.dat
+distance S3 :36, 37, 38, 130, 134, 157, 159, 174, 176, 177 :56, 60, 74, 76, 78, 113, 114, 117 out pbd_tq_cavity_dist.dat
+distance S4 :36, 37, 38, 130, 134, 157, 159, 174, 176, 177 :43, 44, 120, 121, 123, 163, 168, 170, 187 out pbd_tq_cavity_dist.dat
+distance S5 :27, 182, 184, 188, 189, 190, 203, 205 :39, 40, 58, 59, 122, 125, 126, 127 out pbd_tq_cavity_dist.dat
+distance S6 :27, 182, 184, 188, 189, 190, 203, 205 :56, 60, 74, 76, 78, 113, 114, 117 out pbd_tq_cavity_dist.dat
+distance S7 :27, 182, 184, 188, 189, 190, 203, 205 :43, 44, 120, 121, 123, 163, 168, 170, 187 out pbd_tq_cavity_dist.dat
+distance S8 :39, 40, 58, 59, 122, 125, 126, 127 :56, 60, 74, 76, 78, 113, 114, 117 out pbd_tq_cavity_dist.dat
+distance S9 :39, 40, 58, 59, 122, 125, 126, 127 :43, 44, 120, 121, 123, 163, 168, 170, 187 out pbd_tq_cavity_dist.dat
+distance S10 :56, 60, 74, 76, 78, 113, 114, 117 :43, 44, 120, 121, 123, 163, 168, 170, 187 out pbd_tq_cavity_dist.dat
+go
+
+protein within 5 angstrom of allopole-A W-F :36,37,40,124,125,126,127,128,129,130,181,183,189
+
+
+To further explain the uniqueness of these clusters, we projected the MVIL structures onto a 2D free energy surface using LD1-LD2 (Figure 4) and LD3-LD4 (Figure 5). The LD1 vector distinctly separated C1, C2, and C4 clusters, while LD2 separated C1 and C2. LD3-LD4 separation encompassed C1, C2, C3, and C5 clusters.
+
+
+ax = plt.axes(projection='3d')
+
+# Data for a three-dimensional line
+zline = np.linspace(0, 15, 1000)
+xline = np.sin(zline)
+yline = np.cos(zline)
+ax.plot3D(xline, yline, zline, 'gray')
+
+# Data for three-dimensional scattered points
+zdata = 15 * np.random.random(100)
+xdata = np.sin(zdata) + 0.1 * np.random.randn(100)
+ydata = np.cos(zdata) + 0.1 * np.random.randn(100)
+ax.scatter3D(xdata, ydata, zdata, c=zdata, cmap='Greens');
+fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax)
+plt.show()
+
+
+data1 = np.loadtxt('c-9_1.dat')
+data2 = np.loadtxt('c-9_2.dat')
+data3 = np.loadtxt('c-9_3.dat')
+data4 = np.loadtxt('c-9_4.dat')
+data5 = np.loadtxt('c-9_bs1.2.dat')
+data6 = 
+a = data1[:,5]
+b = data2[:,5]
+c = data3[:,5]
+d = data4[:,5]
+e = data5[:,5]
+f = data6[:,5]
+
+sns.distplot(f, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'BS1-PP', color = 'k')
+sns.distplot(b, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'BS1', color = 'r')
+sns.distplot(e, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'BS1-2', color = 'magenta')
+sns.distplot(c, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'BS5', color = 'cyan')
+sns.distplot(a, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'BS6', color = 'brown')
+sns.distplot(d, hist = False, kde = True, kde_kws = {'linewidth': 1}, label = 'BS7', color = 'blue')
+plt.legend(prop={'size': 16})
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
+plt.ylim(0,0.06)
+plt.xlim(-50,300)
+plt.xlabel('Ligand displacement (Å/ps)', fontsize=14, fontweight='bold')
+plt.ylabel('Probability density', fontsize=14, fontweight='bold')
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.show()
+
+0.1 Å/ns
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots()
+ax.plot(x, a, label='PP in BS1', color='black', linewidth=2)
+ax.plot(x, b, label='Allopole-A in BS3', color='green', linewidth=2)
+ax.plot(x, c, label='Poloxin in BS5', color='cyan', linewidth=2)
+ax.plot(x, d, label='(–)–9* in BS7', color='blue', linewidth=2)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.xlabel('Protein—PP distance (Å)', fontsize=14, fontweight='bold')
+plt.xlim(10,20)
+plt.ylim(-0.5,8)
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)
+plt.ylabel('PMF (kcal/mol)', fontsize=14, fontweight='bold')
+plt.show()
+
+
+Trp414(Cα)—His598(Cα)
+trajin pep*dcd
+cluster C0 \
+dbscan minpoints 25 epsilon 0.9 sievetoframe \
+rms :1-224@CA \
+sieve 10 random \
+out cnumvtime.dat \
+sil Sil \
+summary summary.dat \
+info info.dat \
+cpopvtime cpopvtime.agr normframe \
+repout rep repfmt pdb \
+singlerepout singlerep.nc singlerepfmt netcdf \
+avgout Avg avgfmt restart
+
+data1 = np.loadtxt('c+9_1.dat')
+data2 = np.loadtxt('c+9_2.dat')
+data3 = np.loadtxt('c+9_3.dat')
+data4 = np.loadtxt('c+9_4.dat')
+data5 = np.loadtxt('c+9_bs1.2.dat')
+data6 = np.loadtxt('4hco_pep.dat')
+
+sns.distplot(f, hist = False, kde = True, kde_kws = {'linewidth': 2}, label = 'BS1-PP', color = 'k')
+sns.distplot(b, hist = False, kde = True, kde_kws = {'linewidth': 2}, label = 'BS1', color = 'r')
+sns.distplot(e, hist = False, kde = True, kde_kws = {'linewidth': 2}, label = 'BS1-2', color = 'magenta')
+sns.distplot(c, hist = False, kde = True, kde_kws = {'linewidth': 2}, label = 'BS5', color = 'cyan')
+sns.distplot(a, hist = False, kde = True, kde_kws = {'linewidth': 2}, label = 'BS6', color = 'brown')
+sns.distplot(d, hist = False, kde = True, kde_kws = {'linewidth': 2}, label = 'BS7', color = 'blue')
+plt.legend(prop={'size': 16})
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+plt.ylim(0,0.06)
+plt.xlim(-50,300)
+plt.xlabel('Ligand displacement (Å/ps)', fontsize=14, fontweight='bold')
+plt.ylabel('Probability density', fontsize=14, fontweight='bold')
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.show()
+
+
+fig, ax = plt.subplots()
+p = ax.scatter(x,y, marker="o", c=df["Compound"], s=50, alpha=0.5, cmap=plt.cm.get_cmap('jet'))
+plt.plot(np.unique(Y_test), np.poly1d(np.polyfit(Y_test, Y_pred, 1))(np.unique(Y_test)), label='$R^2$ = 0.9'
+)
+plt.xlabel("ΔG$_b$ (kcal/mol)", fontsize=14,fontweight='bold')
+plt.ylabel("IC50 (µM)", fontsize=14, fontweight='bold')
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+# add cluster labels
+plt.xticks(np.arange(np.min(x), np.max(x), 5),fontsize=14)
+plt.yticks(fontsize=14)
+plt.xlim(-60,-35)
+plt.ylim(-2,6)
+plt.text(-37.5, -2.6, 'BS1', color='r', fontsize=10)
+plt.text(-58.8, -5.4, 'BS4', color='orange', fontsize=10)
+plt.text(-49.9, -4.7, 'BS5', color='cyan', fontsize=10)
+plt.text(-47.2, -4.5, 'BS6', color='brown', fontsize=10)
+plt.text(-39.9, -3.8, 'BS7', color='blue', fontsize=10)
+#plt.text(-20.5,1.4, 'PLX-2', color='k', fontsize=10)
+#plt.text(-10.2,22.5, '(–)–9*', color='k', fontsize=10)
+plt.legend(prop={'size': 16})
+plt.colorbar(p)
+plt.show()
+
+
+import numpy as np
+import mdtraj as md
+
+# Load the trajectories
+trajectories = []
+for i in range(100):
+    #trajectory = md.load('trajectory_{}.dcd'.format(i))
+    trajectory = md.load('prot1.dcd', top='rec.pdb')
+    trajectories.append(trajectory)
+
+# Calculate the binding site volume for each trajectory
+binding_site_volumes = []
+for trajectory in trajectories:
+    # Get the binding site residues
+    binding_site_residues = [10, 11, 12, 13, 14]
+
+    # Calculate the volume of the binding site
+    binding_site_volume = 0
+    for residue in binding_site_residues:
+        binding_site_volume += md.unitcell_volumes(trajectory, residue)
+
+    binding_site_volumes.append(binding_site_volume)
+
+# Print the binding site volumes
+for binding_site_volume in binding_site_volumes:
+    print(binding_site_volume)
+
+
+
+binding_site_volumes = []
+for frame in range(len(trajectory)):
+    # Get the binding site residues
+    binding_site_residues = [10, 11, 12, 13, 14]
+
+    # Calculate the binding site volume
+    binding_site_volume = calculate_binding_site_volume(trajectory, residue)
+
+    # Add the binding site volume to the list
+    binding_site_volumes.append(binding_site_volume)
+
+# Calculate the average binding site volume over all trajectories
+average_binding_site_volume = np.mean(binding_site_volumes)
+
+# Print the average binding site volume
+print("Average binding site volume:", average_binding_site_volume)
+
+
+
+import mdtraj as md
+import numpy as np
+
+# Load the protein and ligand trajectories
+protein_trajectory = md.load("prot1.dcd", top="rec.pdb")
+
+import mdtraj as md
+
+# Define functions for calculating grid points and volume
+def create_grid(protein, ligand_residues, probe_radius, grid_spacing):
+  """
+  Creates a grid around the ligand in the protein structure.
+  """
+  center = protein.top.select_atoms('resid '+str(ligand_residues[0])).xyz[0]
+  min_x, max_x = center[0] - probe_radius, center[0] + probe_radius
+  min_y, max_y = center[1] - probe_radius, center[1] + probe_radius
+  min_z, max_z = center[2] - probe_radius, center[2] + probe_radius
+  x, y, z = np.mgrid[min_x:max_x+grid_spacing:grid_spacing,
+                     min_y:max_y+grid_spacing:grid_spacing,
+                     min_z:max_z+grid_spacing:grid_spacing]
+  return x, y, z
+
+def calculate_volume(protein, ligand_residues, probe_radius, grid_spacing):
+  """
+  Calculates the accessible volume around the ligand using a grid approach.
+  """
+  x, y, z = create_grid(protein, ligand_residues, probe_radius, grid_spacing)
+  grid_points = np.vstack((x.ravel(), y.ravel(), z.ravel())).T
+  distances = md.compute_distances(grid_points, protein.xyz)
+  accessible_points = np.sum(distances <= probe_radius, axis=1)
+  return np.sum(accessible_points) * grid_spacing**3
+
+# Load trajectory and define parameters
+trajectory = md.load('prot2_c-9_b.dcd', top='prot2_c-9_b_gas.pdb')
+ligand_residues = [10, 11, 12]  # Adjust based on your system
+probe_radius = 1.4  # Adjust based on your needs
+grid_spacing = 0.5  # Adjust based on desired accuracy
+
+# Calculate volume for each trajectory frame
+volumes = []
+for i in range(trajectory.n_frames):
+  frame = trajectory[i]
+  volume = calculate_volume(frame, ligand_residues, probe_radius, grid_spacing)
+  volumes.append(volume)
+
+# Analyze and visualize volumes (e.g., plot volume over time)
+# ...
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import make_interp_spline
+
+# Sample x-data
+data = np.loadtxt("fcyt_ir.txt")
+data1 = np.loadtxt('mp2_fcyt_ir.txt')
+
+a = data[:,0]
+b = data[:,1]
+c = data[:,2]
+d = data[:,3]
+e = data[:,4]
+f = data[:,5]
+g = data[:,6]
+h = data[:,7]
+i = data[:,8]
+j = data[:,9]
+k = data[:,10]
+l = data[:,11]
+m = data[:,12]
+n = data[:,13]
+o = data[:,14]
+p = data[:,15]
+q = data1[:,0]
+r = data1[:,1]
+s = data1[:,2]
+t = data1[:,3]
+u = data1[:,4]
+v = data1[:,5]
+
+
+A_B_Spline = make_interp_spline(a, b)
+A_ = np.linspace(a.min(), a.max(), 500)
+B_ = A_B_Spline(A_)
+
+C_D_Spline = make_interp_spline(c, d)
+C_ = np.linspace(c.min(), c.max(), 500)
+D_ = C_D_Spline(C_)
+
+E_F_Spline = make_interp_spline(e, f)
+E_ = np.linspace(e.min(), e.max(), 500)
+F_ = E_F_Spline(E_)
+
+G_H_Spline = make_interp_spline(g, h)
+G_ = np.linspace(g.min(), g.max(), 500)
+H_ = G_H_Spline(G_)
+
+I_J_Spline = make_interp_spline(i, j)
+I_ = np.linspace(i.min(), i.max(), 500)
+J_ = I_J_Spline(I_)
+
+K_L_Spline = make_interp_spline(k, l)
+K_ = np.linspace(k.min(), k.max(), 500)
+L_ = K_L_Spline(K_)
+
+M_N_Spline = make_interp_spline(m, n)
+M_ = np.linspace(m.min(), m.max(), 500)
+N_ = M_N_Spline(M_)
+
+O_P_Spline = make_interp_spline(o, p)
+O_ = np.linspace(o.min(), o.max(), 500)
+P_ = O_P_Spline(O_)
+
+Q_R_Spline = make_interp_spline(q, r)
+Q_ = np.linspace(q.min(), q.max(), 500)
+R_ = Q_R_Spline(Q_)
+
+S_T_Spline = make_interp_spline(s, t)
+S_ = np.linspace(s.min(), s.max(), 500)
+T_ = S_T_Spline(S_)
+
+U_V_Spline = make_interp_spline(u, v)
+U_ = np.linspace(u.min(), u.max(), 500)
+V_ = U_V_Spline(U_)
+
+# Create the plot
+plt.figure(figsize=(8, 5))  # Adjust figure size as needed
+plt.plot(A_, B_, label = "L1")
+plt.plot(C_, D_, color = 'red', label = "L2")
+plt.plot(E_, F_, label = "L3", color = 'orange')
+plt.plot(G_, H_, label = "L4", color = 'green')
+plt.plot(I_, J_, label = "L5", color = 'blue')
+plt.plot(K_, L_, label = "L6", color = 'purple')
+plt.plot(M_, N_, label = "L7", color = 'magenta')
+plt.plot(O_, P_, label =  "L8", color = 'cyan')
+plt.plot(Q_, R_, label = "L9", color = 'brown')
+plt.plot(S_, T_, label = "L10", color = 'indigo')
+plt.plot(U_, V_, label = "L11", color = 'gray')
+
+# Reverse the x-axis for both ticks and labels
+plt.gca().invert_xaxis()
+
+# Set informative labels
+plt.xlabel("Wavenumber /cm$^–$$^1$", fontweight='bold', fontsize=14)
+plt.ylabel("Transmittance", fontweight='bold', fontsize=14)
+#plt.title("1, calc.")
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)  # Display a tick for every x-value
+
+plt.legend(prop={'size': 12})
+# Show the plot
+#plt.grid(True)  # Add a grid for readability
+plt.show()
+
+
+# Create the plot
+plt.figure(figsize=(8, 5))  # Adjust figure size as needed
+plt.plot(a, b, label = "L1")
+plt.plot(c, d, color = 'red', label = "L2")
+plt.plot(e, f, label = "L3", color = 'orange')
+plt.plot(g, h, label = "L4", color = 'green')
+plt.plot(i, j, label = "L5", color = 'blue')
+plt.plot(k, l, label = "L6", color = 'purple')
+plt.plot(m, n, label = "L7", color = 'magenta')
+plt.plot(o, p, label =  "L8", color = 'cyan')
+plt.plot(q, r, label = "L9", color = 'brown')
+plt.plot(s, t, label = "L10", color = 'indigo')
+plt.plot(u, v, label = "L11", color = 'gray',)
+
+# Reverse the x-axis for both ticks and labels
+plt.gca().invert_xaxis()
+
+# Set informative labels
+plt.xlabel("Wavenumber /cm$^–$$^1$", fontweight='bold', fontsize=14)
+plt.ylabel("Transmittance", fontweight='bold', fontsize=14)
+#plt.title("1, calc.")
+plt.xticks(fontsize=14)
+plt.yticks(fontsize=14)  # Display a tick for every x-value
+# Optionally set tick frequency
+#plt.ylim(bottom=0.)  # Display a tick for every x-value
+plt.legend(prop={'size': 12})
+# Show the plot
+#plt.grid(True)  # Add a grid for readability
+plt.show()
+
+grep "ORBITAL ENERGIES" pca.out -A40 $1 | grep '2.0000' |tail -1 |awk '{print $4}' 
+grep "ORBITAL ENERGIES" pca.out -A40 $1 | grep '0.0000' |head -1 |awk '{print $4}'
+
+
+Ser152-His263-Asp176
+ser190- - asp221-asp218
+
+
+
+
+from rdkit import Chem
+from rdkit.Chem import AllChem
+import csv
+
+def calculate_tanimoto_similarities(smiles_list, output_filename):
+  """
+  This function calculates Tanimoto similarity between all pairs of SMILES strings in a list and saves the results to a CSV file.
+
+
+  Args:
+      smiles_list: A list of SMILES strings.
+      output_filename: The path to the output CSV file.
+  """
+  # Convert SMILES strings to RDKit molecules
+  mols = [Chem.MolFromSmiles(smile) for smile in smiles_list]
+
+  # Fingerprint each molecule
+  fps = [AllChem.RDKFingerprint(mol) for mol in mols]
+
+  # Initialize an empty list to store similarities
+  similarities = []
+
+  # Calculate Tanimoto similarity for all pairs of molecules
+  for i in range(len(mols)):
+    for j in range(i + 1, len(mols)):
+      sim = AllChem.DataStructs.TanimotoSimilarity(fps[i], fps[j])
+      similarities.append((i, j, sim))
+
+  # Save similarities to a CSV file
+  with open(output_filename, 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["Molecule 1", "Molecule 2", "Tanimoto Similarity"])
+    writer.writerows(similarities)
+
+  print(f"Tanimoto similarities saved to: {output_filename}")
+ 
+# Example usage:
+smiles_list = smiles_list  # Replace with your 100 SMILES strings
+output_filename = "tanimoto_similarities.csv"
+
+# Calculate and save similarities
+calculate_tanimoto_similarities(smiles_list, output_filename)
+
+
+
+from rdkit import Chem
+
+def read_smiles_list(filename):
+  """
+  This function reads a list of SMILES strings from a text file.
+
+  Args:
+      filename: The path to the text file containing SMILES strings.
+
+  Returns:
+      A list of SMILES strings read from the file.
+  """
+  # Open the file for reading
+  with open(filename, 'r') as f:
+    # Read all lines from the file
+    lines = f.readlines()
+
+  # Remove leading/trailing whitespaces from each line (optional)
+  smiles_list = [line.strip() for line in lines]
+
+  return smiles_list
+
+# Example usage:
+filename = "all.csv"  # Replace with your actual filename
+smiles_list = read_smiles_list(filename)
+
+# Now you can use the smiles_list for further processing
+
+print(f"Read {len(smiles_list)} SMILES strings from the file.")
+
+
+import numpy as np
+from rdkit import Chem
+from rdkit.Chem import AllChem
+from rdkit.DataStructs import SparseBitVect
+from sklearn.cluster import KMeans
+
+def cluster_molecules(smiles_list, num_clusters):
+    """
+    Clusters molecules based on Tanimoto similarity and selects representative structures.
+
+    Args:
+        smiles_list: A list of SMILES strings.
+        num_clusters: The desired number of clusters.
+
+    Returns:
+        A dictionary containing cluster assignments, centroids, and representative structures.
+    """
+
+    # Convert SMILES to molecules and fingerprints
+    mols = [Chem.MolFromSmiles(smile) for smile in smiles_list]
+    fps = [AllChem.RDKFingerprint(mol) for mol in mols]
+
+    # Calculate Tanimoto similarity matrix efficiently
+    tanimoto_matrix = []
+    for i in range(len(fps)):
+        row = [DataStructs.TanimotoSimilarity(fps[i], fp) for fp in fps]
+        tanimoto_matrix.append(row)
+
+    # Cluster molecules using KMeans
+    kmeans = KMeans(n_clusters=num_clusters, random_state=0)
+    kmeans.fit(tanimoto_matrix)
+    cluster_labels = kmeans.labels_
+    centroids = kmeans.cluster_centers_  # Note: Centroids are not fingerprints here
+
+    # Select representative structures (closest to centroid)
+    representatives = []
+    for i in range(num_clusters):
+        cluster_mols = [mols[j] for j, label in enumerate(cluster_labels) if label == i]
+
+        # Find molecule with minimum Euclidean distance to centroid (since centroids aren't fingerprints)
+        min_dist = np.inf
+        rep_index = None
+        for idx, mol in enumerate(cluster_mols):
+            dist = np.linalg.norm(tanimoto_matrix[idx] - centroids[i])
+            if dist < min_dist:
+                min_dist = dist
+                rep_index = idx
+        representatives.append(Chem.MolToSmiles(cluster_mols[rep_index]))
+
+    return {
+        "cluster_labels": cluster_labels,
+        "centroids": centroids,
+        "representatives": representatives
+    }
+
+# Example usage:
+smiles_list = smiles_list  # Replace with your 100 SMILES strings
+num_clusters = 9
+
+# Cluster molecules and get results
+results = cluster_molecules(smiles_list, num_clusters)
+
+# Access cluster assignments, centroids, and representatives
+cluster_labels = results["cluster_labels"]
+centroids = results["centroids"]
+representatives = results["representatives"]
+
+# Print or use the results for further analysis
+print("Cluster assignments:")
+for i, label in enumerate(cluster_labels):
+  print(f"Molecule {i}: Cluster {label}")
+
+print("\nRepresentative structures (SMILES):")
+for rep in representatives:
+  print(rep)
+
+
+
+rep 1 - Cc1[nH]c2c(C)ccc(F)c2c1CCNC(=O)c1ccc(Br)cc1 mol180
+rep 2 - CCOc1ccc2c(=O)c(Oc3ccccc3OC)c(C)oc2c1 mol160
+rep 3 - S=C(NC[C@@H]1C[C@H]2CC[N@@]1C[C@@H]2CN1CCN(c2ncccn2)CC1)Nc1ccc(-n2cccn2)cc1 mol86
+rep 4 - COc1ccc(/C=C/C(=O)c2cc(OC)ccc2OC)c(OC)c1 mol8
+rep 5 - COc1ccc(OC)c(-c2c(C)c3ccc(O)cc3oc2=O)c1 mol87
+rep 6 - O=C(NCCc1ccc(O)cc1)c1ccc(Cl)cc1 mol1
+rep 7 - Cc1cc2oc(-c3cc4ccccc4o3)cc(=O)c2cc1C mol52
+rep 8 - CC(C)Oc1cc(O)c2c(=O)c(-c3ccc(O)cc3)coc2c1 mol21
+rep 9 - Cc1ccc(-n2nc(C)c([C@@H]3C=C[C@@H](NC(=O)Nc4ccc(Cl)cc4)C3)c2C)cc1Cl mol90
+
+
+
+NCSA replacement code
+980476295
+728622641
+
+
+sed '1 d' step1_pdbreader.pdb | awk '{print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" $7 "\t" $8 "\t" $9}' > tq-bs1-pbd.pdb
+
+
+
+data9 = np.loadtxt("FE100ns.dat")
+x9 = data9[:,0]
+y9 = data9[:,1]
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+y4 = data4[:,1]
+data5 = np.loadtxt("bs4_tq_plk1/FE_bs4_tq.dat")
+x5 = data5[:,0]
+y5 = data5[:,1]
+data6 = np.loadtxt("bs5_tq/FE_bs5_tq.dat")
+x6 = data6[:,0]
+y6 = data6[:,1]
+data7 = np.loadtxt("bs6_tq/FE_bs6-tq.dat")
+x7 = data7[:,0]
+y7 = data7[:,1]
+data8 = np.loadtxt("bs7_tq/FE_bs7_tq.dat")
+x8 = data8[:,0]
+y8 = data8[:,1]
+data3 = np.loadtxt("../bs3_tq1/FE_bs3_tq.dat")
+x3 = data3[:,0]
+y3 = data3[:,1]
+#plt.plot(x,y, linewidth=2, label = '0.1')
+#plt.plot(x2,y2, linewidth=2, label = '0.2')
+#plt.plot(x3,y3, linewidth=2, label = 'wt_0.1')
+plt.plot(x4,y4, linewidth=1.5, label = 'BS1', color = 'red')
+plt.plot(x3,y3, linewidth=1.5, label = 'BS3', color = 'green')
+plt.plot(x5,y5, linewidth=1.5, label = 'BS4', color = 'orange')
+plt.plot(x6,y6, linewidth=1.5, label = 'BS5', color = 'cyan')
+plt.plot(x7,y7, linewidth=1.5, label = 'BS6', color = 'brown')
+plt.plot(x8,y8, linewidth=1.5, label = 'BS7', color = 'blue')
+#plt.plot(x10,y10, linewidth=2, label = '10ns')
+plt.xlabel('COM-Distance (Å)')
+plt.legend()
+plt.xlim(0,30)
+#plt.ylim(-8,0)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.ylabel('PMF (kcal/mol)')
+plt.savefig('lda_clust.png', dpi=200)
+plt.show()
+
+
+red - [10000:]
+orange - [9600:]
+cyan - 2000:4000
+brown - redo
+blue - 0:2000
+
+
+
+from MDAnalysis import Universe
+
+def calculate_pocket_volume(pdb_file, ligand_residues, probe_radius=1.4):
+  """
+  Calculates the binding pocket volume for a single frame in a PDB file.
+
+  Args:
+      pdb_file: Path to the PDB file.
+      ligand_residues: List of residue names of the ligand.
+      probe_radius: Probe radius used by MSMS (default: 1.4 Angstrom).
+
+  Returns:
+      The volume of the binding pocket (Angstrom^3).
+  """
+  u = Universe(pdb_file)
+  protein = u.select_atoms('protein')  # Select all protein atoms
+  ligand = u.select_atoms(f"name {' '.join(ligand_residues)}")  # Select ligand atoms
+
+  # Define the binding pocket as solvent accessible surface around ligand
+  pocket = protein.add_solvent_accessible_surface(probe_radius=probe_radius)
+  pocket -= ligand  # Exclude ligand from the pocket definition
+
+  # Calculate the volume of the pocket
+  volume = pocket.volume
+
+  return volume
+
+def analyze_trajectory(trajectory_file, ligand_residues, output_file):
+  """
+  Analyzes the binding pocket volume for all frames in a trajectory
+
+  Args:
+      trajectory_file: Path to the trajectory file (e.g., DCD file)
+      ligand_residues: List of residue names of the ligand.
+      output_file: Path to save the pocket volume data.
+  """
+  u = Universe(trajectory_file, format='DCD')  # Assuming DCD format
+  volumes = []
+  for frame in u.trajectory:
+    volume = calculate_pocket_volume(u.slice, ligand_residues)
+    volumes.append(volume)
+
+  # Save the pocket volume data to a file
+  with open(output_file, 'w') as f:
+    f.write("Frame\tVolume (Angstrom^3)\n")
+    for i, volume in enumerate(volumes):
+      f.write(f"{i+1}\t{volume}\n")
+
+# Example usage
+trajectory_file = "path/to/your/trajectory.dcd"
+ligand_residues = ["LIG"]  # Replace with your ligand residue names
+output_file = "pocket_volume.txt"
+
+analyze_trajectory(trajectory_file, ligand_residues, output_file)
+
+distance: ligand to a crucial residue in cpptraj
+TQ
+distance bs1 :170@NZ :LIG@C2 out cys-lig_bs1.dat
+distance bs4 :174@SG :LIG@C2 out cys-lig_bs4.dat
+distance bs5 :203@SG :LIG@C2 out cys-lig_bs5.dat
+distance bs6 :58@SG :LIG@C2 out cys-lig_bs6.dat
+distance bs7 :113@NH1 :LIG@C2 out cys-lig_bs7.dat
+
+PLX
+distance bs1 :170@NZ :LIG@C17 out cys-lig_bs1.dat
+distance bs4 :174@SG :LIG@C17 out cys-lig_bs4.dat
+distance bs5 :203@SG :LIG@C17 out cys-lig_bs5.dat
+distance bs6 :58@SG :LIG@C17 out cys-lig_bs6.dat
+distance bs7 :113@NH1 :LIG@C17 out cys-lig_bs7.dat
+
+PLX2,22,23
+distance bs1 :170@NZ :LIG@C15 out cys-lig_bs1.dat
+distance bs4 :174@SG :LIG@C15 out cys-lig_bs4.dat
+distance bs5 :203@SG :LIG@C15 out cys-lig_bs5.dat
+distance bs6 :58@SG :LIG@C15 out cys-lig_bs6.dat
+distance bs7 :113@NH1 :LIG@C15 out cys-lig_bs7.dat
+
+c-9 
+distance bs1 :170@NZ :LIG@C3 out cys-lig_bs1.dat
+distance bs1-2 :119@NE2 :LIG@C3 out cys-lig_bs1-2.dat
+distance bs5 :203@SG :LIG@C3 out cys-lig_bs5.dat
+distance bs6 :58@SG :LIG@C3 out cys-lig_bs6.dat
+distance bs7 :113@NH1 :LIG@C3 out cys-lig_bs7.dat
+
+c+9 
+distance bs1 :170@NZ :LIG@C4 out cys-lig_bs1.dat
+distance bs1-2 :119@NE2 :LIG@C4 out cys-lig_bs1-2.dat
+distance bs5 :203@SG :LIG@C4 out cys-lig_bs5.dat
+distance bs6 :58@SG :LIG@C4 out cys-lig_bs6.dat
+distance bs7 :113@NH1 :LIG@C4 out cys-lig_bs7.dat
+
+Allopole-A
+distance bs1 :170@NZ :LIG@C3 out cys-lig_bs1.dat
+distance bs3 :40@NE1 :LIG@C3 out cys-lig_bs3.dat
+distance bs4 :174@SG :LIG@C3 out cys-lig_bs4.dat
+distance bs5 :203@SG :LIG@C3 out cys-lig_bs5.dat
+distance bs6 :58@SG :LIG@C3 out cys-lig_bs6.dat
+distance bs7 :113@NH1 :LIG@C3 out cys-lig_bs7.dat
+
+Allopole-A
+
+outtraj 1.pdb onlyframes 1
+
+
+plotting a portion of data
+
+import numpy as np 
+import matplotlib.pyplot as plt
+data1 = np.loadtxt("cys-lig_bs1.dat")
+a1 = data1[:,0]
+a2 = data1[:,1]
+data2 = np.loadtxt("cys-lig_bs4.dat")
+b1 = data2[:,0]
+b2 = data2[:,1]
+data3 = np.loadtxt("cys-lig_bs5.dat")
+c1 = data3[:,0]
+c2 = data3[:,1]
+data4 = np.loadtxt("cys-lig_bs6.dat")
+d1 = data4[:,0]
+d2 = data4[:,1]
+data5 = np.loadtxt("cys-lig_bs7.dat")
+e1 = data5[:,0]
+e2 = data5[:,1]
+data1 = np.loadtxt("plx_bs1/hbonds.dat")
+a1 = data1[:,0]
+a2 = data1[:,1]
+data2 = np.loadtxt("plx_bs4/hbonds.dat")
+b1 = data2[:,0]
+b2 = data2[:,1]
+data3 = np.loadtxt("plx_bs5/hbonds.dat")
+c1 = data3[:,0]
+c2 = data3[:,1]
+data4 = np.loadtxt("plx_bs6/hbonds.dat")
+d1 = data4[:,0]
+d2 = data4[:,1]
+data5 = np.loadtxt("plx_bs7/hbonds.dat")
+e1 = data5[:,0]
+e2 = data5[:,1]
+fig, ax = plt.subplots()
+ax.plot(a1/10,a2, label='PLX in BS1', color ='red')
+ax.plot(B1/10,data2, label='PLX in BS4', color ='orange')
+ax.plot(a1/10,data3, label='PLX in BS5', color ='cyan')
+ax.plot(a1/10,data4, label='PLX in BS6', color ='brown')
+ax.plot(a1/10,data5, label='PLX in BS7', color = 'blue')
+params = {'legend.fontsize':10, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+#plt.title('Number of H-bonds', fontweight='bold')
+plt.xlabel('Time (ns)', fontweight='bold')
+plt.ylabel('Number of H-bonds', fontweight='bold')
+#plt.xlim(0,200)
+#plt.ylim(2.5,10)
+plt.legend()
+plt.show()
+
+
+
+data1 = np.loadtxt("bs1_hbonds.dat")
+a1 = data1[:,0]
+a2 = data1[:,1]
+data2 = np.loadtxt("bs4_hbonds.dat")
+b1 = data2[:,0]
+b2 = data2[:,1]
+data3 = np.loadtxt("bs5_hbonds.dat")
+c1 = data3[:,0]
+c2 = data3[:,1]
+data4 = np.loadtxt("bs6_hbonds.dat")
+d1 = data4[:,0]
+d2 = data4[:,1]
+data5 = np.loadtxt("bs7_hbonds.dat")
+e1 = data5[:,0]
+e2 = data5[:,1]
+fig, ax = plt.subplots()
+ax.plot(e1/10,a2, label='BS1', color ='red')
+ax.plot(e1/10,b2, label='BS4', color ='orange')
+ax.plot(e1/10,c2, label='BS5', color ='cyan')
+ax.plot(d1/10,d2, label='BS6', color ='brown')
+ax.plot(e1/10,e2, label='BS7', color ='blue')
+params = {'legend.fontsize':10, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.title('Hydrogen bonds between PLX2 and PBD', fontweight='bold')
+plt.xlabel('Time (ns)', fontweight='bold')
+plt.ylabel('Number of HB', fontweight='bold')
+#plt.xlim(0,200)
+#plt.ylim(0,7)
+plt.legend()
+plt.show()
+
+
+
+For Apo
+import MDAnalysis as mda
+from scipy.spatial import ConvexHull
+import numpy as np
+
+# Function to calculate binding pocket volume for apo protein
+def calculate_binding_pocket_volume(traj_file, topology_file, selection):
+    # Load the trajectory using MDAnalysis
+    u = mda.Universe(topology_file, traj_file)
+
+    # Selection for the binding site (modify as per your system)
+    binding_site_atoms = u.select_atoms(selection)
+
+    # Calculate volume for each frame
+    volumes = []
+    for ts in u.trajectory:
+        # Calculate center of mass of binding site atoms
+        binding_site_center = binding_site_atoms.center_of_mass()
+
+        # Calculate distances from binding site center to binding site atoms
+        distances = np.linalg.norm(binding_site_atoms.positions - binding_site_center, axis=1)
+
+        # Determine which atoms are within the binding site
+        within_site = distances <= 5.0  # Adjust threshold as needed (in Angstroms)
+
+        # Extract coordinates of atoms within the binding site
+        site_atoms_positions = binding_site_atoms.positions[within_site]
+
+        # Calculate volume using Convex Hull method from Scipy
+        if len(site_atoms_positions) > 3:  # Need at least 4 points to define a volume
+            hull = ConvexHull(site_atoms_positions)
+            volume = hull.volume
+        else:
+            volume = 0.0
+
+        volumes.append(volume)
+
+    return volumes
+
+# Function to save volumes to a text file
+def save_volumes(volumes, output_file):
+    with open(output_file, 'w') as f:
+        f.write("Frame\tVolume (Å³)\n")
+        for i, vol in enumerate(volumes):
+            f.write(f"{i+1}\t{vol:.3f}\n")
+
+# Example usage:
+if __name__ == "__main__":
+    traj_file = 'trajectory.dcd'  # Path to trajectory file
+    topology_file = 'topology.pdb'  # Path to topology file (PDB format)
+    selection = 'protein'  # Selection for binding site (e.g., 'protein and name CA')
+    output_file = 'binding_pocket_volumes_apo.txt'  # Output file to save volumes
+
+    volumes = calculate_binding_pocket_volume(traj_file, topology_file, selection)
+    
+    # Save volumes to a text file
+    save_volumes(volumes, output_file)
+    
+    print(f"Binding pocket volumes for apo protein saved to '{output_file}'.")
+
++1 (240) 945-8829
+
+for bound
+import MDAnalysis as mda
+from scipy.spatial import ConvexHull
+import numpy as np
+
+# Function to calculate binding pocket volume for apo protein
+def calculate_binding_pocket_volume(traj_file, topology_file, selection):
+    # Load the trajectory using MDAnalysis
+    u = mda.Universe(topology_file, traj_file)
+
+    # Selection for the binding site (modify as per your system)
+    binding_site_atoms = u.select_atoms(selection)
+
+    # Calculate volume for each frame
+    volumes = []
+    for ts in u.trajectory:
+        # Calculate center of mass of binding site atoms
+        binding_site_center = binding_site_atoms.center_of_mass()
+
+        # Calculate distances from binding site center to binding site atoms
+        distances = np.linalg.norm(binding_site_atoms.positions - binding_site_center, axis=1)
+
+        # Determine which atoms are within the binding site
+        within_site = distances <= 5.0  # Adjust threshold as needed (in Angstroms)
+
+        # Extract coordinates of atoms within the binding site
+        site_atoms_positions = binding_site_atoms.positions[within_site]
+
+        # Calculate volume using Convex Hull method from Scipy
+        if len(site_atoms_positions) > 3:  # Need at least 4 points to define a volume
+            hull = ConvexHull(site_atoms_positions)
+            volume = hull.volume
+        else:
+            volume = 0.0
+
+        volumes.append(volume)
+
+    return volumes
+
+# Function to save volumes to a text file
+def save_volumes(volumes, output_file):
+    with open(output_file, 'w') as f:
+        f.write("Frame\tVolume (Å³)\n")
+        for i, vol in enumerate(volumes):
+            f.write(f"{i+1}\t{vol:.3f}\n")
+
+# Example usage:
+if __name__ == "__main__":
+    traj_file = 'trajectory.dcd'  # Path to trajectory file
+    topology_file = 'topology.pdb'  # Path to topology file (PDB format)
+    selection = 'protein'  # Selection for binding site (e.g., 'protein and name CA')
+    output_file = 'binding_pocket_volumes_apo.txt'  # Output file to save volumes
+
+    volumes = calculate_binding_pocket_volume(traj_file, topology_file, selection)
+    
+    # Save volumes to a text file
+    save_volumes(volumes, output_file)
+    
+    print(f"Binding pocket volumes for apo protein saved to '{output_file}'.")
+
+
+New
+import MDAnalysis as mda
+import numpy as np
+from scipy.spatial import ConvexHull
+from scipy.spatial.distance import cdist
+
+def compute_convex_hull_volume(points):
+    """Compute the volume of the convex hull for given points."""
+    if len(points) < 4:
+        return 0.0  # Need at least 4 points to define a 3D volume
+
+    try:
+        hull = ConvexHull(points)
+        return hull.volume
+    except:
+        # Skip if ConvexHull calculation fails (e.g., collinear points)
+        return 0.0
+
+def calculate_binding_pocket_volumes(traj_file, topology_file, ligand_selection):
+    # Load the trajectory using MDAnalysis
+    u = mda.Universe(topology_file, traj_file)
+
+    # Select the ligand atoms
+    ligand_atoms = u.select_atoms(ligand_selection)
+
+    # Calculate volume for the region within 4 Å of the ligand
+    all_volumes = []
+
+    for ts in u.trajectory:
+        # Get positions of ligand atoms
+        if len(ligand_atoms) > 0:
+            ligand_positions = ligand_atoms.positions
+
+            # Select all atoms in the system
+            all_atoms = u.atoms
+            all_atom_positions = all_atoms.positions
+
+            # Calculate distances from all atoms to ligand atoms
+            distances = cdist(all_atom_positions, ligand_positions)
+
+            # Find atoms within 4 Å from the ligand
+            within_4A = np.any(distances < 4, axis=1)
+
+            # Extract positions of atoms within 4 Å from the ligand
+            nearby_atoms_positions = all_atom_positions[within_4A]
+
+            # Calculate convex hull volume using these atoms
+            if len(nearby_atoms_positions) > 3:  # Need at least 4 points to define a volume
+                volume = compute_convex_hull_volume(nearby_atoms_positions)
+            else:
+                volume = 0.0
+        else:
+            volume = 0.0
+
+        all_volumes.append(volume)
+
+    return all_volumes
+
+def save_volumes(volumes, output_file):
+    with open(output_file, 'w') as f:
+        f.write("Frame\tVolume (Å³)\n")
+        for i, vol in enumerate(volumes):
+            f.write(f"{i+1}\t{vol:.3f}\n")
+    print(f"Binding pocket volumes saved to '{output_file}'.")
+
+# Example usage:
+if __name__ == "__main__":
+    traj_file = 'bs1_tq_300ns.dcd'  # Path to trajectory file
+    topology_file = 'bs1_tq_redo.prmtop'  # Path to topology file (PDB format)
+
+    # Selection for ligand atoms
+    ligand_selection = 'resname LIG'  # Update 'LIG' to your ligand's residue name
+
+    output_file = 'ligand_nearby_atoms_volumes.txt'  # Output file name
+
+    volumes = calculate_binding_pocket_volumes(traj_file, topology_file, ligand_selection)
+
+    # Save volumes to text files
+    save_volumes(volumes, output_file)
+
+
+
+bs1 - 394.207
+bs4 - 560.082
+bs5 - 388.900
+bs6 - 297.222
+bs7 - 146.256
+
+data8 = np.loadtxt("../../c-/plx23_bs1/volumes.txt")
+h1 = data8[:,0]
+h2 = data8[:,1]
+data9 = np.loadtxt("../../c-/plx23_bs1/volumes.txt")
+i1 = data9[:,0]
+i2 = data9[:,1]
+
+
+data1 = np.loadtxt("bs1/ligand_nearby_atoms_volumes.txt", delimiter='\t', dtype=str)
+a1 = data1[:,0]
+a2 = data1[:,1]
+data2 = np.loadtxt("bs2/ligand_nearby_atoms_volumes.txt", delimiter='\t', dtype=str)
+b1 = data2[:,0]
+b2 = data2[:,1]
+data3 = np.loadtxt("bs3/ligand_nearby_atoms_volumes.txt", delimiter='\t', dtype=str)
+c1 = data3[:,0]
+c2 = data3[:,1]
+data4 = np.loadtxt("bs4/ligand_nearby_atoms_volumes.txt", delimiter='\t', dtype=str)
+d1 = data4[:,0]
+d2 = data4[:,1]
+data5 = np.loadtxt("bs5/ligand_nearby_atoms_volumes.txt", delimiter='\t', dtype=str)
+e1 = data5[:,0]
+e2 = data5[:,1]
+data6 = np.loadtxt("bs6/ligand_nearby_atoms_volumes.txt", delimiter='\t', dtype=str)
+f1 = data6[:,0]
+f2 = data6[:,1]
+data7 = np.loadtxt("bs7/ligand_nearby_atoms_volumes.txt", delimiter='\t', dtype=str)
+g1 = data7[:,0]
+g2 = data7[:,1]
+
+data4 = np.loadtxt("../../plx2_pbd_/plx2_bs1/binding_pocket_volumes.txt")
+d1 = data4[:,0]
+d2 = data4[:,1]
+data5 = np.loadtxt("../../plx22_pbd_/plx22_bs1/binding_pocket_volumes.txt")
+e1 = data5[:,0]
+e2 = data5[:,1]
+data6 = np.loadtxt("../../plx23_pbd_/plx23_bs1/binding_pocket_volumes.txt")
+f1 = data6[:,0]
+f2 = data6[:,1]
+data7 = np.loadtxt("../../c-9_pbd/c-9_bs1/binding_pocket_volumes.txt")
+g1 = data7[:,0]
+g2 = data7[:,1]
+data8 = np.loadtxt("../../c+9_pbd/c+9_bs1/binding_pocket_volumes.txt")
+h1 = data8[:,0]
+h2 = data8[:,1]
+data9 = np.loadtxt("../../allop_a_pbd_BSs/allopa_bs1/binding_pocket_volumes.txt")
+i1 = data9[:,0]
+i2 = data9[:,1]
+fig, ax = plt.subplots()
+ax.plot(data1[:,0]/10, data1[:,1], label='TQ (612±1)', color ='red')
+ax.plot(data8[:,0]/10, data8[:,1], label='PLX (706±4)', color ='gold')
+ax.plot(data9[:,0]/10, data9[:,1], label='PLX23 (648±4)', color ='green')
+ax.plot(data10[:,0]/10, data10[:,1], label='(–)–9* (1220±2)', color ='orange')
+ax.plot(data12[:,0]/10, data12[:,1], label='(+)–9* (1098±3)', color = 'cyan')
+ax.plot(data11[:,0]/10, data11[:,1], label='Allop.A (691±2)', color ='brown')
+#ax.plot(data7[:,0]/10, data7[:,1], label='BS7 (±)', color = 'blue')
+params = {'legend.fontsize':10, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.title('Volume of the various binding pockets', fontweight='bold')
+plt.ylabel('Volume (Å³)', fontweight='bold')
+plt.xlabel('Time (ns)', fontweight='bold')
+plt.xlim(0,200)
+#plt.ylim(1,4.5)
+plt.legend()
+plt.show()
+
+(Å²)
+
+sns.kdeplot(b2, label='TQ', color='r')
+sns.kdeplot(c2, label='PLX')
+sns.kdeplot(d2, label='PLX2')
+sns.kdeplot(e2, label='PLX22', color='cyan')
+sns.kdeplot(f2, label='PLX23', color='k')
+sns.kdeplot(g2, label='(–)–9*', color='magenta')
+sns.kdeplot(h2, label='(+)–9*', color='purple')
+sns.kdeplot(i2, label='Allop.A', color='green')
+params = {'legend.fontsize':10, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.title('Phosphopeptide binding pocket volume', fontweight='bold')
+plt.ylabel('Probability density', fontweight='bold')
+plt.xlabel('Binding pocket volume (Å³)', fontweight='bold')
+#plt.xlim(100,600)
+plt.ylim(0,0.007)
+plt.legend()
+plt.show()
+
+
+
+
+
+sns.displot(b2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='TQ')
+sns.displot(c2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='PLX')
+sns.displot(d2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='PLX2')
+sns.displot(e2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='PLX22')
+sns.displot(f2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='PLX23')
+sns.displot(g2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='(–)–9*')
+sns.displot(h2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='(+)–9*')
+sns.displot(i2, hist = False, kde = True, kde_kws = {'linewidth': 1.5}, label='Allop.A')
+
+
+ax.plot(a1[:2000]/10,a2[10000:12000], label='BS1_414@NE1–TQ@C15', color ='red')
+ax.plot(b1[:2000]/10,b2[9600:11600], label='BS4_544@SG–TQ@C15', color ='orange')
+ax.plot(c1[:2000]/10,c2[2000:4000], label='BS5_573@SG–TQ@C15', color ='cyan')
+ax.plot(d1[:1200]/10,d2[0:1200], label='BS6_428@SG–TQ@C15', color ='brown')
+ax.plot(e1[:2000]/10,e2[:2000], label='BS7_483@NH1–TQ@C15', color = 'blue')
+
+
+ax.plot(a1[:2000]/10,a2[8000:10000], label='BS1_540@NZ–PLX@C15', color ='red')
+ax.plot(b1[:2000]/10,b2[6000:8000], label='BS4_544@SG–PLX@C15', color ='orange')
+ax.plot(c1[:2000]/10,c2[8200:10200], label='BS5_573@SG–PLX@C15', color ='cyan')
+ax.plot(d1[:1600]/10,d2[0:1600], label='BS6_428@SG–PLX@C15', color ='brown')
+ax.plot(e1[:2000]/10,e2[12000:], label='BS7_483@NH1–PLX@C15', color = 'blue')
+
+ax.plot(a1[:2000]/10,a2[6000:8000], label='BS1_540@NZ–PLX2@C15', color ='red')
+ax.plot(b1[:2000]/10,b2[8000:10000], label='BS4_544@SG–PLX2@C15', color ='orange')
+ax.plot(c1[:2000]/10,c2[4000:6000], label='BS5_573@SG–PLX2@C15', color ='cyan')
+ax.plot(d1[:2000]/10,d2[10000:12000], label='BS6_428@SG–PLX2@C15', color ='brown')
+ax.plot(e1[:2000]/10,e2[0:2000], label='BS7_483@NH1–PLX2@C15', color = 'blue')
+
+ ax.plot(a1[:2000]/10,a2[4000:6000], label='BS1_540@NZ–PLX22@C15', color ='red')
+ax.plot(b1[:2000]/10,b2[8000:10000], label='BS4_544@SG–PLX22@C15', color ='orange')
+ax.plot(c1[:2000]/10,c2[:2000], label='BS5_573@SG–PLX22@C15', color ='cyan')
+ax.plot(d1[:2000]/10,d2[12049:], label='BS6_428@SG–PLX22@C15', color ='brown')
+ax.plot(e1[:2000]/10,e2[4000:6000], label='BS7_483@NH1–PLX22@C15', color = 'blue')
+
+ax.plot(a1[:2000]/10,a2[2000:4000], label='BS1_540@NZ–PLX23@C15', color ='red')
+ax.plot(b1[:2000]/10,b2[10000:12000], label='BS4_544@SG–PLX23@C15', color ='orange')
+ax.plot(c1[:2000]/10,c2[2000:4000], label='BS5_573@SG–PLX23@C15', color ='cyan')
+ax.plot(d1[:2000]/10,d2[6000:8000], label='BS6_428@SG–PLX23@C15', color ='brown')
+ax.plot(e1[:2000]/10,e2[:2000], label='BS7_483@NH1–PLX23@C15', color = 'blue')
+
+ax.plot(a1[:2000]/10,a2[2000:4000], label='BS1_540@NZ—(–)–9*@C4', color ='red')
+ax.plot(b1[:2000]/10,b2[4000:6000], label='BS1-2_489@NE2—(–)–9*@C4', color ='magenta')
+ax.plot(c1[:2000]/10,c2[:2000], label='BS5_573@SG—(–)–9*@C4', color ='cyan')
+ax.plot(d1[:2000]/10,d2[10000:12000], label='BS6_428@SG—(–)–9*@C4', color ='brown')
+ax.plot(e1[:2000]/10,e2[:2000], label='BS7_483@NH1—(–)–9*@C4', color = 'blue')
+
+ax.plot(a1[:2000]/10,a2[:2000], label='BS1_540@NZ—(+)–9*@C4', color ='red')
+ax.plot(b1[:2000]/10,b2[4000:6000], label='BS1-2_489@NE2—(+)–9*@C4', color ='magenta')
+ax.plot(c1[:2000]/10,c2[10000:12000], label='BS5_573@SG—(+)–9*@C4', color ='cyan')
+ax.plot(d1[:2000]/10,d2[8000:10000], label='BS6_428@SG—(+)–9*@C4', color ='brown')
+ax.plot(e1[:2000]/10,e2[11000:13000], label='BS7_483@NH1—(+)–9*@C4', color = 'blue')
+
+ax.plot(a1[:2000]/10,a2[8000:10000], label='BS1_540@NZ—Allop.A@C3', color ='red')
+ax.plot(b1[:2000]/10,b2[3000:5000], label='BS3_410@NE1—Allop.A@C3', color ='green')
+ax.plot(c1[:2000]/10,c2[2000:4000], label='BS4_544@SG—Allop.A@C3', color ='orange')
+ax.plot(d1[:2000]/10,d2[3000:5000], label='BS5_573@SG—Allop.A@C3', color ='cyan')
+ax.plot(e1[:2000]/10,e2[3000:5000], label='BS6_428@SG—Allop.A@C3', color = 'brown')
+ax.plot(f1[:2000]/10,f2[5000:7000], label='BS7_483@NH1—Allop.A@C3', color = 'blue')
+
+
+
+
+for i in `seq 1 46`; do obabel -i pdb c${i}.pdb -o pdbqt -O c${i}.pdbqt; done
+for f in c46a.pdbqt; do b=`basename $f`; echo Processing ligand $b; ./bs1; vina --config conf.txt --ligand $f --out bs1/$f --log bs1/$f.txt; done
+
+for f in *.pdbqt; do b=`basename $f`; echo Processing ligand $b; mkdir -p bs1; vina --config conf.txt --ligand $f --out bs1/$f --log bs1/$f.txt; done
+
+for f in *.pdbqt.txt; do b=`basename $f`; echo Processing ligand $b; mv *.pdbqt.txt *.txt; done
+
+for i in `seq 1 46`; do mv c${i}.pdbqt.txt c${i}.txt; cd ../; done
+
+obabel -i pdb 3v.pdb -o pdbqt -O 3v.pdbqt
+for file in *.pdbqt.txt; do mv "$file" "${file%.pdbqt.txt}.txt"; done
+for file in *.pdbqt; do python trim_model.py "$file" "${file%.pdbqt}_trimmed.pdbqt"; done
+bash pdbqt-to-pdb.sh
+bash add_h.sh 
+python vina_score.py
+python create_dir_mol2.py
+python move_mol2.py
+for dir in *_trimmed; do cp 4hco_1.pdb "$dir/"; done
+for dir in *_trimmed; do if [ -d "$dir" ]; then base_dir=$(basename "$dir"); for mol2_file in "$dir"/*_trimmed.mol2; do antechamber -i "$mol2_file" -fi mol2 -o "$dir/lig.mol2" -fo mol2 -j 5 -at gaff -c bcc -nc 0; done; fi; done
+for dir in *_trimmed; do if [ -d "$dir" ]; then base_dir=$(basename "$dir"); for mol2_file in "$dir"/lig.mol2; do parmchk2 -i "$mol2_file" -f mol2 -o "$dir/lig.mol2"; done; fi; done
+for dir in *_trimmed; do if [ -d "$dir" ]; then base_dir=$(basename "$dir"); for mol2_file in "$dir"/lig.mol2; do parmchk2 -i "$mol2_file" -f mol2 -o "$dir/lig.frcmod"; done; fi; done
+bash prepare.sh
+for dir in *_trimmed; do cp lie.in "$dir/"; done
+bash run_lie.sh
+
+ddlab1 ddlab2(right)
+
+import matplotlib.pyplot as plt
+data1 = np.loadtxt("wt_pah_hb.dat")
+data2 = np.loadtxt("r158q_pah_hb.dat")
+data3 = np.loadtxt("r176q_pah_hb.dat")
+data4 = np.loadtxt("r243q_pah_hb.dat")
+data5 = np.loadtxt("r252q_pah_hb.dat")
+data6 = np.loadtxt("r261q_pah_hb.dat")
+data7 = np.loadtxt("r408q_pah_hb.dat")
+
+left, width = 0.1, 0.65
+bottom, height = 0.1, 0.8
+bottom_h = left_h = left+width+0.01
+rect_scatter = [left, bottom, width, height]
+rect_histy = [left_h, bottom, 0.2, height]
+
+plt.figure(1, figsize=(10,8))
+axScatter =plt.axes(rect_scatter)
+axScatter.plot(data1[:,0]/50, data1[:,1], label='WT (14354)', color ='black')
+axScatter.plot(data1[:,0]/50, data2[:,1], label='R158Q (14869)', color ='magenta')
+axScatter.plot(data1[:,0]/50, data3[:,1], label='R176Q (14626)', color ='red')
+axScatter.plot(data1[:,0]/50, data4[:,1], label='R243Q (14517)', color ='orange')
+axScatter.plot(data1[:,0]/50, data5[:,1], label='R252Q (14681)', color ='green')
+axScatter.plot(data1[:,0]/50, data6[:,1], label='R261Q (14426)', color ='cyan')
+axScatter.plot(data1[:,0]/50, data7[:,1], label='R408Q (14560)', color ='blue')
+params = {'legend.fontsize':14, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.legend(prop={'size': 14})
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.xlabel('Time (ns)', fontweight='bold', fontsize=14)
+plt.ylabel('SASA (Å²)', fontweight='bold', fontsize=14)
+plt.xlim(0,500)
+plt.ylim(13200,16200)
+plt.xticks(fontsize=14, fontweight='bold')
+plt.yticks(fontsize=14, fontweight='bold')
+plt.text(250,16100, 'c', color='black', fontsize=18)
+axHisty = plt.axes(rect_histy)
+axHisty.yaxis.set_major_formatter(nullfmt)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+axHisty.hist(data9[:,1], bins=100, orientation='horizontal', color = ['black'])
+axHisty.hist(data1[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data2[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data4[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data3[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data5[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data6[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data7[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data8[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data10[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data11[:,1], bins=100, orientation='horizontal')
+axHisty.hist(data12[:,1], bins=100, orientation='horizontal')
+#plt.savefig('sasa.png', dpi=500)
+plt.show()
+
+
+smooth probability density
+plt.figure(1, figsize=(12,8))
+axScatter = plt.axes(rect_scatter)
+axScatter.plot(data1[:, 0] / 50, data1[:, 1], label='WT (159)', color='black')
+axScatter.plot(data1[:, 0] / 50, data2[:, 1], label='R158Q (155)', color='magenta')
+axScatter.plot(data1[:, 0] / 50, data3[:, 1], label='R176Q (154)', color='red')
+axScatter.plot(data1[:, 0] / 50, data4[:, 1], label='R243Q (154)', color='orange')
+axScatter.plot(data1[:, 0] / 50, data5[:, 1], label='R252Q (158)', color='green')
+axScatter.plot(data1[:, 0] / 50, data6[:, 1], label='R261Q (159)', color='cyan')
+axScatter.plot(data1[:, 0] / 50, data7[:, 1], label='R408Q (157)', color='blue')
+
+params = {'legend.fontsize': 14, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.legend(prop={'size': 14})
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.xlabel('Time (ns)', fontweight='bold', fontsize=14)
+plt.ylabel('SASA (Å²)', fontweight='bold', fontsize=14)
+plt.xlim(0, 500)
+#plt.ylim(13200, 16200)
+plt.xticks(fontsize=14, fontweight='bold')
+plt.yticks(fontsize=14, fontweight='bold')
+plt.text(250, 150, 'c', color='black', fontsize=18)
+plt.show()
+
+# Plot KDE for smoothing instead of histogram
+axHisty = plt.axes(rect_histy)
+axHisty.yaxis.set_major_formatter(plt.NullFormatter())
+for data, color in zip([data1[:, 1], data2[:, 1], data3[:, 1], data4[:, 1], data5[:, 1], data6[:, 1], data7[:, 1]], 
+                       ['black', 'magenta', 'red', 'orange', 'green', 'cyan', 'blue']):
+    kde = gaussian_kde(data, bw_method='silverman')  # Kernel density estimate
+    x_pdf = np.linspace(min(data), max(data), 1000)
+    axHisty.plot(kde(x_pdf), x_pdf, color=color)  # KDE as line plot
+
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+
+plt.savefig('sasa_smooth.png', dpi=500)
+plt.show()
+
+6A within Ligand union
+import MDAnalysis as mda
+import numpy as np
+from scipy.spatial.distance import cdist
+
+def extract_residues_within_radius(traj_file, topology_file, ligand_resname='LIG', radius=6.0):
+    # Load the trajectory and topology using MDAnalysis
+    u = mda.Universe(topology_file, traj_file)
+
+    # Select the ligand atoms
+    ligand_atoms = u.select_atoms(f'resname {ligand_resname}')
+
+    # Set to store unique residue IDs across all frames
+    all_residues = set()
+
+    # Loop through each frame of the trajectory
+    for ts in u.trajectory:
+        # Update positions for the current frame
+        u.trajectory[ts.frame]
+
+        # Extract coordinates of ligand atoms
+        ligand_positions = ligand_atoms.positions
+
+        # Select all atoms in the system
+        all_atoms = u.atoms
+        all_atom_positions = all_atoms.positions
+
+        # Calculate distances from all atoms to ligand atoms
+        distances = cdist(all_atom_positions, ligand_positions)
+
+        # Find atoms within the specified radius from the ligand
+        within_radius = np.any(distances < radius, axis=1)
+
+        # Extract residues of atoms within the radius
+        binding_pocket_residues = all_atoms[within_radius].residues
+
+        # Add unique residues to the set
+        residues_info = {(residue.resid, residue.resname) for residue in binding_pocket_residues}
+        all_residues.update(residues_info)
+
+    return all_residues
+
+def save_union_residues_results(all_residues, output_file):
+    """Save union of residues results to a text file."""
+    with open(output_file, 'w') as f:
+        f.write("Residue ID\tResidue Name\n")
+        for res_id, res_name in sorted(all_residues):
+            f.write(f"{res_id}\t{res_name}\n")
+    print(f"Union of residues within 6 Å saved to '{output_file}'.")
+
+# Example usage
+if __name__ == "__main__":
+    traj_file = 'bs1_tq_300ns.dcd'  # Path to trajectory file
+    topology_file = 'bs1_tq_redo.prmtop'  # Path to topology file
+    ligand_resname = 'LIG'  # Update to your ligand's residue name
+
+    output_file = 'union_residues_within_6A.txt'  # Output file name
+
+    # Extract residues within 6 Å of the ligand across all frames
+    all_residues = extract_residues_within_radius(traj_file, topology_file, ligand_resname, radius=6.0)
+
+    # Save the union of residues results to text file
+    save_union_residues_results(all_residues, output_file)
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Assuming your data is in a text file named 'data.txt'
+data = np.loadtxt('../../PLK1-PBD/Book5.txt')  # Load data from text file
+
+# Extracting data and labels from the image description
+#protein_inhibitors = ["TQ-BS1", "TQ-BS4"]# "TQ-BS4", "TQ-BS5", "TQ-BS6", "TQ-BS7"] #PLX", "PLX-2", "3v-
+1", "3v-2", "3v-3", "4v-1", "4v-2", "4v-3", "Abbapolin12-1", "Abbapolin12-2", "Abbapolin12-3", 
+                      #"Allopole-", "Allopole-2", "Allopole-3", "AllopoleA", "AllopoleA-2", 
+
+pocket_labels = ["TQ-BS1", "PLX-BS1"]# "BS1-2", "BS3", "BS4", "BS5", "BS6", "BS7"]
+
+# Create the heatmap
+plt.figure(figsize=(12, 10))  # Adjust the figure size if needed
+ax = sns.heatmap(data, cmap="RdYlGn", annot=True, fmt=".2f", xticklabels=pocket_labels)# yticklabels=pro
+tein_inhibitors)
+plt.title("H-bond occupancy heatmap")
+plt.xlabel("Pocket")
+#plt.ylim(0.03,1)
+#plt.ylabel("Donor-acceptor")
+
+cbar = ax.collections[0].colorbar
+cbar.set_label('Percent occupancy (%)')
+plt.show()
+
+tq -bs4
+plx- bs4
+plx2- bs4
+plx22-bs4
+plx23-bs4
+-(-) - bs1-2
++(-) - bs1-2
+allop-A - BS3
+
+
+
+import MDAnalysis as mda
+from MDAnalysis.analysis.distances import distance_array
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load the topology and trajectory files
+u = mda.Universe('bs1_tq_redo.top', 'bs1_tq_300ns.dcd')
+
+# Define hydrophobic residues (common hydrophobic residues)
+hydrophobic_residues = ['VAL', 'LEU', 'ILE', 'LYS', 'HIS', 'GLU', 'TYR', 'PHE', 'MET', 'PRO', 'ALA', 'GLY', 'CYS', 'TRP']
+
+# Select hydrophobic atoms in the protein and ligand
+protein_hydrophobic = u.select_atoms(f"protein and (resname {' '.join(hydrophobic_residues)})")
+ligand_hydrophobic = u.select_atoms("resname LIG")  # Adjust 'LIG' to match your ligand name
+
+# Select atoms of the protein and ligand for van der Waals interaction
+protein_atoms = u.select_atoms('protein')
+ligand_atoms = u.select_atoms('resname LIG')  # Adjust 'LIG' to match your ligand name
+
+# Define cutoff distances for hydrophobic and vdW interactions
+hydrophobic_cutoff = 2.3  # Hydrophobic interaction cutoff (in Angstroms)
+vdw_cutoff = 2.5  # van der Waals interaction cutoff (in Angstroms)
+
+# Initialize lists to store hydrophobic interactions and vdW bonds over time
+hydrophobic_interactions = []
+vdw_bonds = []
+
+# Open a file to write both hydrophobic and vdW results
+with open('interactions.csv', 'w') as output_file:
+    output_file.write('Frame,Hydrophobic Interactions,vdW Bonds\n')  # Write the header
+
+    # Iterate over each frame of the trajectory
+    for ts in u.trajectory:
+        # Hydrophobic interaction: Calculate distances between protein and ligand hydrophobic atoms
+        hydrophobic_distances = distance_array(protein_hydrophobic.positions, ligand_hydrophobic.positions)
+        num_hydrophobic_interactions = np.sum(hydrophobic_distances < hydrophobic_cutoff)
+
+        # van der Waals interaction: Calculate distances between protein and ligand atoms
+        vdw_distances = distance_array(protein_atoms.positions, ligand_atoms.positions)
+        num_vdw_bonds = np.sum(vdw_distances < vdw_cutoff)
+
+        # Store the interactions for this frame
+        hydrophobic_interactions.append(num_hydrophobic_interactions)
+        vdw_bonds.append(num_vdw_bonds)
+
+        # Write the frame number, hydrophobic interactions, and vdW bonds to the file
+        output_file.write(f'{ts.frame},{num_hydrophobic_interactions},{num_vdw_bonds}\n')
+
+# Plot hydrophobic interactions over time
+plt.figure(figsize=(10, 6))
+plt.plot(hydrophobic_interactions, label='Hydrophobic Interactions')
+plt.plot(vdw_bonds, label='Number of vdW Bonds', color='orange')
+plt.xlabel('Frame')
+plt.ylabel('Number')
+#plt.title('Hydrophobic Interactions Over Time')
+plt.legend()
+plt.grid(True)
+#plt.savefig('hydrophobic_interactions_plot.png', dpi=300)  # Optionally save the plot
+plt.show()
+
+
+import MDAnalysis as mda
+from MDAnalysis.analysis.distances import distance_array
+from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA
+import numpy as np
+import matplotlib.pyplot as plt
+from collections import defaultdict
+
+# Load the topology and trajectory files
+u = mda.Universe('bs1_tq_redo.top', 'bs1_tq_300ns.dcd')
+
+# Define hydrophobic residues (common hydrophobic residues)
+hydrophobic_residues = ['ARG', 'ASP', 'VAL', 'LEU', 'ILE', 'LYS', 'HIS', 'GLU', 'TYR', 'PHE', 'MET', 'PRO', 'ALA', 'CYS', 'TRP']
+
+# Select hydrophobic atoms in the protein and ligand
+protein_hydrophobic = u.select_atoms(f"protein and (resname {' '.join(hydrophobic_residues)})")
+ligand_hydrophobic = u.select_atoms("resname LIG")  # Adjust 'LIG' to match your ligand name
+
+# Select atoms of the protein and ligand for van der Waals interaction
+protein_atoms = u.select_atoms('protein')
+ligand_atoms = u.select_atoms('resname LIG')  # Adjust 'LIG' to match your ligand name
+
+# Define cutoff distances for hydrophobic and vdW interactions
+hydrophobic_cutoff = 2.4  # Hydrophobic interaction cutoff (in Angstroms)
+vdw_cutoff = 2.45  # van der Waals interaction cutoff (in Angstroms)
+
+# Initialize dictionaries to track interactions for each residue
+hydrophobic_counts = defaultdict(int)
+vdw_counts = defaultdict(int)
+hbonds_per_residue = defaultdict(int)  # For hydrogen bonds
+
+# Total number of frames
+total_frames = len(u.trajectory)
+
+# Set up Hydrogen Bond Analysis (HBA)
+hydrogens_sel = 'protein and name H*'  # Hydrogen atoms in the protein
+acceptors_sel = 'resname LIG and name O* N* S* F* Cl*'  # Acceptors in the ligand
+
+hbonds = HBA(universe=u, hydrogens_sel=hydrogens_sel, acceptors_sel=acceptors_sel, d_a_cutoff=3.5)
+hbonds.run()
+# Iterate over each frame of the trajectory
+for ts in u.trajectory:
+    
+# Hydrogen bonding analysis (from previously run hbonds)
+for hbond in hbonds.hbonds:  # 'hbonds.hbonds' contains info for all frames
+    frame, donor_idx, hydrogen_idx, acceptor_idx, distance, angle = hbond
+
+    # Safely retrieve atoms by their indices
+    try:
+        donor_atom = u.atoms[int(donor_idx)]
+        acceptor_atom = u.atoms[int(acceptor_idx)]
+    except IndexError:
+        continue  # Skip any bad indices
+
+    # Get residue IDs for both donor and acceptor
+    donor_resid = donor_atom.resid
+    acceptor_resid = acceptor_atom.resid
+
+    # Increment the count for the residues involved in hydrogen bonding
+    hbonds_per_residue[donor_resid] += 1
+    hbonds_per_residue[acceptor_resid] += 1
+# Calculate percent occupancy for each residue for hydrophobic, vdW, and hydrogen bonds
+hydrophobic_occupancy = {resid: (count / total_frames) * 100 for resid, count in hydrophobic_counts.items()}
+vdw_occupancy = {resid: (count / total_frames) * 100 for resid, count in vdw_counts.items()}
+hbond_occupancy = {resid: (count / total_frames) * 100 for resid, count in hbonds_per_residue.items()}
+
+# Open a file to write the percent occupancy results
+with open('interaction_percent_occupancy.csv', 'w') as output_file:
+    output_file.write('Residue,Hydrophobic Occupancy (%),vdW Occupancy (%),H-bond Occupancy (%)\n')
+    all_residues = set(hydrophobic_occupancy.keys()).union(vdw_occupancy.keys()).union(hbond_occupancy.keys())
+    for resid in all_residues:
+        h_occ = hydrophobic_occupancy.get(resid, 0)
+        vdw_occ = vdw_occupancy.get(resid, 0)
+        hbond_occ = hbond_occupancy.get(resid, 0)
+        output_file.write(f'{resid},{h_occ:.2f},{vdw_occ:.2f},{hbond_occ:.2f}\n')
+
+# Prepare data for plotting
+residues = list(all_residues)
+hydrophobic_percents = [hydrophobic_occupancy.get(resid, 0) for resid in residues]
+vdw_percents = [vdw_occupancy.get(resid, 0) for resid in residues]
+hbond_percents = [hbond_occupancy.get(resid, 0) for resid in residues]
+
+# Sort residues by hydrophobic occupancy for better visualization
+sorted_residues, sorted_hydro, sorted_vdw, sorted_hbond = zip(*sorted(zip(residues, hydrophobic_percents, vdw_percents, hbond_percents)
+, key=lambda x: x[1], reverse=True))
+
+# Plot hydrophobic, vdW, and H-bond interaction occupancy
+plt.figure(figsize=(10, 6))
+
+bar_width = 0.25
+index = np.arange(len(sorted_residues))
+
+plt.barh(index, sorted_hydro, bar_width, label='Hydrophobic Occupancy (%)', color='lightblue')
+plt.barh(index + bar_width, sorted_vdw, bar_width, label='vdW Occupancy (%)', color='orange')
+plt.barh(index + 2 * bar_width, sorted_hbond, bar_width, label='H-bond Occupancy (%)', color='lightgreen')
+
+plt.xlabel('Percent Occupancy (%)')
+plt.ylabel('Residue')
+plt.title('Hydrophobic, vdW, and H-bond Interaction Occupancy per Residue')
+plt.yticks(index + bar_width, sorted_residues)
+plt.legend()
+plt.grid(True)
+
+# Optionally save the plot
+#plt.savefig('interaction_occupancy_plot.png', dpi=300)
+
+# Display the plot
+plt.tight_layout()
+plt.show()
+
+
+import MDAnalysis as mda
+from MDAnalysis.analysis.distances import distance_array
+from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA
+import numpy as np
+import matplotlib.pyplot as plt
+from collections import defaultdict
+
+# Load the topology and trajectory files
+u = mda.Universe('bs1_tq_redo.top', 'bs1_tq_300ns.dcd')
+
+# Define hydrophobic residues (common hydrophobic residues)
+hydrophobic_residues = ['ARG', 'SER', 'ASP', 'VAL', 'LEU', 'ILE', 'LYS', 'HIS', 'GLU', 'TYR', 'PHE', 'MET', 'PRO', 'ALA', 'GLY', 'CYS',
+ 'TRP']
+
+# Select hydrophobic atoms in the protein and ligand
+protein_hydrophobic = u.select_atoms(f"protein and (resname {' '.join(hydrophobic_residues)})")
+ligand_hydrophobic = u.select_atoms("resname LIG")  # Adjust 'LIG' to match your ligand name
+
+# Select atoms of the protein and ligand for van der Waals interaction
+protein_atoms = u.select_atoms('protein')
+ligand_atoms = u.select_atoms('resname LIG')  # Adjust 'LIG' to match your ligand name
+
+# Define cutoff distances for hydrophobic and vdW interactions
+hydrophobic_cutoff = 2.4  # Hydrophobic interaction cutoff (in Angstroms)
+vdw_cutoff = 2.45  # van der Waals interaction cutoff (in Angstroms)
+
+# Initialize lists to track contacts over time
+hydrophobic_contacts_per_frame = []
+vdw_contacts_per_frame = []
+hbond_contacts_per_frame = []
+
+# Set up Hydrogen Bond Analysis (HBA)
+hydrogens_sel = 'protein and name H*'  # Hydrogen atoms in the protein
+acceptors_sel = 'resname LIG and name O* N* S* F* Cl*'  # Acceptors in the ligand
+
+hbonds = HBA(universe=u, hydrogens_sel=hydrogens_sel, acceptors_sel=acceptors_sel, d_a_cutoff=3.5)
+hbonds.run()
+
+# Total number of frames
+total_frames = len(u.trajectory)
+# Open a CSV file to write the number of contacts per frame
+with open('contacts_over_time.csv', 'w') as output_file:
+    output_file.write('Frame,Hydrophobic Contacts,vdW Contacts,H-bond Contacts\n')
+
+    # Iterate over each frame of the trajectory
+    for ts in u.trajectory:
+        # Hydrophobic interaction: Calculate distances between protein and ligand hydrophobic atoms
+        hydrophobic_distances = distance_array(protein_hydrophobic.positions, ligand_hydrophobic.positions)
+        num_hydrophobic_contacts = np.sum(hydrophobic_distances < hydrophobic_cutoff)
+
+        # van der Waals interaction: Calculate distances between protein and ligand atoms
+        vdw_distances = distance_array(protein_atoms.positions, ligand_atoms.positions)
+        num_vdw_contacts = np.sum(vdw_distances < vdw_cutoff)
+
+        # Hydrogen bonding interaction: Check for hydrogen bonds in this frame
+        hbond_contacts = [hbond for hbond in hbonds.hbonds if hbond[0] == ts.frame]
+        num_hbond_contacts = len(hbond_contacts)
+
+        # Store the number of contacts for this frame
+        hydrophobic_contacts_per_frame.append(num_hydrophobic_contacts)
+        vdw_contacts_per_frame.append(num_vdw_contacts)
+        hbond_contacts_per_frame.append(num_hbond_contacts)
+
+        # Write the data to the file
+        output_file.write(f'{ts.frame},{num_hydrophobic_contacts},{num_vdw_contacts},{num_hbond_contacts}\n')
+
+# Plot the number of contacts over time
+plt.figure(figsize=(10, 6))
+
+# Plot hydrophobic contacts over time
+plt.plot(hydrophobic_contacts_per_frame, label='Hydrophobic Contacts', color='blue')
+
+# Plot vdW contacts over time
+plt.plot(vdw_contacts_per_frame, label='vdW Contacts', color='orange')
+
+# Plot H-bond contacts over time
+plt.plot(hbond_contacts_per_frame, label='H-bond Contacts', color='green')
+
+plt.xlabel('Frame')
+plt.ylabel('Number of Contacts')
+plt.title('Number of Contacts Over Simulation Time')
+plt.legend()
+plt.grid(True)
+
+# Optionally save the plot
+#plt.savefig('contacts_over_time_plot.png', dpi=300)
+
+# Display the plot
+plt.tight_layout()
+plt.show()
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Example data: replace these with your actual data
+# You can calculate these from your real dataset
+means = [11788, 12043, 11888, 11801,  11703, 11534, 12108, 11844, 12024, 11939, 12107, 11820, 11854, 11553, 12228]  # Mean SASA values
+errors = [6, 5, 6, 7, 6, 7, 8, 7, 7, 6, 7, 7, 6, 7, 6]  # Errors (standard deviation or SEM)
+labels = ['Apo', 'TQ in BS1', 'PLX in BS1', 'PLX23 in BS1', '–(–)9* in BS1-2', '–(+)9* in BS1-2', 'Allop.A in BS1', 'TQ in BS2', 'PLX in BS2', 
+          'PLX2 in BS2', 'PLX22 in BS2', 'PLX23 in BS2', 'TQ in BS3', 'PLX in BS3', 'PLX22 in BS3']
+
+# Create x-axis values corresponding to each label
+x = np.arange(len(labels))
+
+# Plot the average values with error bars
+plt.figure(figsize=(10, 6))
+plt.errorbar(x, means, yerr=errors, fmt='o', capsize=5, linestyle='-', color='b', ecolor='gray', elinewidth=2)
+
+# Add labels and title
+plt.xticks(x, labels, rotation=45, ha="right")
+plt.ylabel('SASA (Å²)')
+plt.title('Average SASA with Errors for Each System')
+
+# Optional grid and layout adjustment
+plt.grid(True)
+plt.tight_layout()
+
+# Save the figure (optional)
+# plt.savefig('average_sasa_with_errors.png', dpi=300)
+
+# Display the plot
+plt.show()
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Example data: replace these with your actual data
+# You can calculate these from your real dataset
+means = [11788, 12043, 11888, 11801, 11703, 11534, 12108, 11844, 12024, 11939, 12107, 11820, 11797, 11759, 12299, 11854, 11553, 12228, 12375, 11876, 11904, 11771, 11715, 11210, 11974, 11697, 11854, 11808,11524, 11727,11888,11828,11977,11734,11690, 11889, 11646, 11766, 11841, 11813,11859,11931,11689, 11928, 11976, 12046,11655,12039,11768,11732,11872]  # Mean SASA values
+errors = [6, 5, 6, 7, 6, 7, 8, 7, 7, 6, 7, 7, 6, 6, 7, 6, 7, 6, 7, 6, 6, 6,6,6,6,7,6,7,7,6,5,7,8,6,7,6,6,9,7,6,6,6,6,6,6,7,8,8,6,7,7]  # Errors (standard deviation or SEM)
+labels = ['Apo', 'TQ in BS1', 'PLX in BS1', 'PLX23 in BS1', '–(–)9* in BS1-2', '–(+)9* in BS1-2', 'Allop.A in BS1', 'TQ in BS2', 'PLX in BS2', 'PLX2 in BS2', 'PLX22 in BS2', 'PLX23 in BS2', '–(–)9* in BS2', '–(+)9* in BS2', 'Allop.A in BS2', 'TQ in BS3', 'PLX in BS3', 'PLX22 in BS3', '–(–)9* in BS3', '–(+)9* in BS3', 'Allop.A in BS3', 'TQ in BS4', 'PLX in BS4', 'PLX2 in BS4', 'PLX22 in BS4', 'PLX23 in BS4', '–(–)9* in BS4', '–(+)9* in BS4', 'Allop.A in BS4', 'TQ in BS5', 'PLX in BS5', 'PLX2 in BS5', 'PLX22 in BS5', 'PLX23 in BS5', '–(–)9* in BS5', '–(+)9* in BS5', 'Allop.A in BS5', 'TQ in BS6', 'PLX in BS6', 'PLX2 in BS6', 'PLX22 in BS6', 'PLX23 in BS6', '–(–)9* in BS6', '–(+)9* in BS6', 'Allop.A in BS6', 'TQ in BS7', 'PLX in BS7', 'PLX22 in BS7', 'PLX23 in BS7', '–(–)9* in BS7', 'Allop.A in BS7']
+
+# Create x-axis values corresponding to each label
+x = np.arange(len(labels))
+
+# Create the bar plot
+plt.figure(figsize=(10, 6))
+plt.bar(x, means, yerr=errors, capsize=5, color='skyblue', edgecolor='black', alpha=0.7)
+
+# Add labels and title
+plt.xticks(x, labels, rotation=45, ha="right")
+plt.ylabel('SASA (Å²)')
+plt.title('Average SASA with Errors for Each System')
+
+# Optional grid and layout adjustment
+plt.grid(True, axis='y')  # Add gridlines for better readability (y-axis only)
+plt.tight_layout()
+plt.ylim(11000,12400)
+
+# Save the figure (optional)
+# plt.savefig('average_sasa_with_errors_bar_plot.png', dpi=300)
+
+# Display the plot
+plt.show()
+
+
+# You can calculate these from your real dataset
+means = [612, 706, 648, 1220, 1098, 691, 411, 731, 571, 610, 655, 942, 976, 585, 807, 1110, 1018, 1603, 1223, 892, 699, 1085, 854, 978, 948, 878, 999, 746, 503, 846,718,706,798,1049,1170, 607, 462, 973, 625, 598,781,1307,979, 712, 447, 939,594,719,1081,531]  # Mean SASA values
+errors = [1, 4, 4, 2, 3, 2, 2, 3, 2, 2, 2, 3, 3, 1, 1, 3, 2, 4, 5, 1, 1,2,2,1,2,4,3,3,1,2,2,2,2,3,2,1,2,2,2,2,3,6,3,2,3,2,3,5,3,2]  # Errors (standard deviation or SEM)
+labels = ['TQ in BS1', 'PLX in BS1', 'PLX23 in BS1', '–(–)9* in BS1-2', '–(+)9* in BS1-2', 'Allop.A in BS1', 'TQ in BS2', 'PLX in BS2', 'PLX2 in BS2', 'PLX22 in BS2', 'PLX23 in BS2', '–(–)9* in BS2', '–(+)9* in BS2', 'Allop.A in BS2', 'TQ in BS3', 'PLX in BS3', 'PLX22 in BS3', '–(–)9* in BS3', '–(+)9* in BS3', 'Allop.A in BS3', 'TQ in BS4', 'PLX in BS4', 'PLX2 in BS4', 'PLX22 in BS4', 'PLX23 in BS4', '–(–)9* in BS4', '–(+)9* in BS4', 'Allop.A in BS4', 'TQ in BS5', 'PLX in BS5', 'PLX2 in BS5', 'PLX22 in BS5', 'PLX23 in BS5', '–(–)9* in BS5', '–(+)9* in BS5', 'Allop.A in BS5', 'TQ in BS6', 'PLX in BS6', 'PLX2 in BS6', 'PLX22 in BS6', 'PLX23 in BS6', '–(–)9* in BS6', '–(+)9* in BS6', 'Allop.A in BS6', 'TQ in BS7', 'PLX in BS7', 'PLX22 in BS7', 'PLX23 in BS7', '–(–)9* in BS7', 'Allop.A in BS7']
+
+# Create x-axis values corresponding to each label
+x = np.arange(len(labels))
+
+# Create the bar plot
+plt.figure(figsize=(10, 6))
+plt.bar(x, means, yerr=errors, capsize=5, color='skyblue', edgecolor='black', alpha=0.7)
+
+# Add labels and title
+plt.xticks(x, labels, rotation=45, ha="right")
+plt.ylabel('SASA (Å²)')
+plt.title('Average SASA with Errors for Each System')
+
+# Optional grid and layout adjustment
+plt.grid(True, axis='y')  # Add gridlines for better readability (y-axis only)
+plt.tight_layout()
+#plt.ylim(11000,12400)
+
+# Save the figure (optional)
+# plt.savefig('average_sasa_with_errors_bar_plot.png', dpi=300)
+
+# Display the plot
+plt.show()
+
+
+data1 = np.loadtxt("../../tq_pbd_BSs/bs1/con")
+data2 = np.loadtxt("../../plx_pbd_BSs/plx_bs1/con")
+data5 = np.loadtxt("../../plx23_pbd_/plx23_bs1/co")
+data6 = np.loadtxt("../../c-9_pbd/c-")
+data7 = np.loadtxt("ligand_nearby_atoms_volumes.txt")
+data8 = np.loadtxt("../../allop_a_pbd_BSs/allopa_bs1")
+
+fig, ax = plt.subplots()
+ax.plot(data1[0]/10, data1[3], label='TQ (699±1)', color ='orange')
+ax.plot(data2[0]/10, data2[3], label='PLX (1085±2)')
+ax.plot(data5[0]/10, data5[3], label='PLX23 (948±2)')
+ax.plot(data6[0]/10, data6[3], label='–(–)9* (878±4)')
+ax.plot(data7[0]/10, data7[3], label='–(+)9* (999±3)')
+ax.plot(data8[0]/10, data8[3], label='Allop.A (746±3)')
+params = {'legend.fontsize':10, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.title('BS4 over the simulation time', fontweight='bold')
+plt.ylabel('Volume (Å³)', fontweight='bold')
+plt.xlabel('Time (ns)', fontweight='bold')
+plt.xlim(0,200)
+#plt.ylim(1,4.5)
+plt.legend()
+plt.show()
+
+
+fig, ax = plt.subplots()
+ax.plot(data[:,0], data[:,1], label='TQ (699±1)', color ='orange')
+params = {'legend.fontsize':10, 'legend.handlelength': 1, 'font.weight': 'bold'}
+plt.rcParams.update(params)
+plt.grid(visible=True, which='major', axis='both', color='#808080', linestyle='--')
+plt.title('BS4 over the simulation time', fontweight='bold')
+plt.ylabel('Volume (Å³)', fontweight='bold')
+plt.xlabel('Time (ns)', fontweight='bold')
+plt.xlim(0,200)
+#plt.ylim(1,4.5)
+plt.legend()
+plt.show()
+
+
+
+import MDAnalysis
+from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (HydrogenBondAnalysis as HBA)
+
+u = MDAnalysis.Universe(bs1_tq_redo.top, bs1_tq_300ns.dcd)
+
+hbonds = HBA(universe=u, between=['resname TIP3', 'protein'])
+
+protein_hydrogens_sel = hbonds.guess_hydrogens("protein")
+protein_acceptors_sel = hbonds.guess_acceptors("protein")
+
+ligand_hydrogens_sel = "resname LIG and name H*"
+ligand_acceptors_sel = "resname LIG and name O* N* S* F* Cl*"
+
+hbonds.hydrogens_sel = f"({protein_hydrogens_sel}) or ({ligand_hydrogens_sel})"
+hbonds.acceptors_sel = f"({protein_acceptors_sel}) or ({ligand_acceptors_sel})"
+
+hbonds.run()
+
+# Iterate over each frame of the trajectory
+for ts in u.trajectory:
+    # Hydrophobic interaction: Calculate distances between protein and ligand hydrophobic atoms
+    hydrophobic_distances = distance_array(protein_hydrophobic.positions, ligand_hydrophobic.positions)
+    hydrophobic_interacting_pairs = np.where(hydrophobic_distances < hydrophobic_cutoff)
+
+    # For each interacting hydrophobic atom, increase the count for the residue it belongs to
+    for i in hydrophobic_interacting_pairs[0]:
+        residue_index = protein_hydrophobic[i].resid
+        hydrophobic_counts[residue_index] += 1
+
+    # van der Waals interaction: Calculate distances between protein and ligand atoms
+    vdw_distances = distance_array(protein_atoms.positions, ligand_atoms.positions)
+    vdw_interacting_pairs = np.where(vdw_distances < vdw_cutoff)
+
+    # For each interacting vdW atom, increase the count for the residue it belongs to
+    for i in vdw_interacting_pairs[0]:
+        residue_index = protein_atoms[i].resid
+        vdw_counts[residue_index] += 1
+
+# Hydrogen bonding analysis (from previously run hbonds)
+for hbond in hbonds.hbonds:  # 'hbonds.hbonds' contains info for all frames
+    frame, donor_idx, hydrogen_idx, acceptor_idx, distance, angle = hbond
+
+    # Safely retrieve atoms by their indices
+    try:
+        donor_atom = u.atoms[int(donor_idx)]
+        acceptor_atom = u.atoms[int(acceptor_idx)]
+    except IndexError:
+        continue  # Skip any bad indices
+
+    # Get residue IDs for both donor and acceptor
+    donor_resid = donor_atom.resid
+    acceptor_resid = acceptor_atom.resid
+
+    # Increment the count for the residues involved in hydrogen bonding
+    hbonds_per_residue[donor_resid] += 1
+    hbonds_per_residue[acceptor_resid] += 1
+# Calculate percent occupancy for each residue for hydrophobic, vdW, and hydrogen bonds
+hydrophobic_occupancy = {resid: (count / total_frames) * 100 for resid, count in hydrophobic_counts.items()}
+vdw_occupancy = {resid: (count / total_frames) * 100 for resid, count in vdw_counts.items()}
+hbond_occupancy = {resid: (count / total_frames) * 100 for resid, count in hbonds_per_residue.items()}
+
+# Open a file to write the percent occupancy results
+with open('interaction_percent_occupancy.csv', 'w') as output_file:
+    output_file.write('Residue,Hydrophobic Occupancy (%),vdW Occupancy (%),H-bond Occupancy (%)\n')
+    all_residues = set(hydrophobic_occupancy.keys()).union(vdw_occupancy.keys()).union(hbond_occupancy.keys())
+    for resid in all_residues:
+        h_occ = hydrophobic_occupancy.get(resid, 0)
+        vdw_occ = vdw_occupancy.get(resid, 0)
+        hbond_occ = hbond_occupancy.get(resid, 0)
+        output_file.write(f'{resid},{h_occ:.2f},{vdw_occ:.2f},{hbond_occ:.2f}\n')
+
+# Prepare data for plotting
+residues = list(all_residues)
+hydrophobic_percents = [hydrophobic_occupancy.get(resid, 0) for resid in residues]
+vdw_percents = [vdw_occupancy.get(resid, 0) for resid in residues]
+hbond_percents = [hbond_occupancy.get(resid, 0) for resid in residues]
+
+# Sort residues by hydrophobic occupancy for better visualization
+sorted_residues, sorted_hydro, sorted_vdw, sorted_hbond = zip(*sorted(zip(residues, hydrophobic_percents, vdw_percents, hbond_percents)
+, key=lambda x: x[1], reverse=True))
+
+
+
+trajin bs1_tq_200ns.dcd
+reference com.pdb
+nativecontacts name bs1 :1-224 :225 byresidue out nc.all.res.dat mindist maxdist distance 5.0 reference map mapout resmap.dat contactpdb acs.pdb series seriesout native.dat
+
+
+trajin bs1_tq_200ns.dcd
+rms first
+average crdset MyAvg
+run 
+rms ref MyAvg
+atomicfluct out rmsf.dat :37,38,39,40,42,58, 59, 60,122,124,125,126,127,128,129 byres
+go
+
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Sample dataset creation (replace this with your data)
+# Rows represent "Protein-inhibitor" and columns represent "Pocket" (C1, C2, ..., C10)
+data = {
+    'Protein-inhibitor': ['79–1', '79–2', '79–3', '3v–1', '3v–2', '3v–3', '4v–1', '4v–2', '4v–3', 'Abbapolin-12–1', 'Abbapolin-12–2', 'Abbapolin-12–3', 'Allopole–1', 'Allopole–2', 'Allopole–3', 'Allopole-A–1', 'Allopole-A–2', 'Allopole-A–3', 'An-329–1', 'An-329–2', 'An-329–3', 'Aristolactam–1', 'Aristolactam–2', 'Aristolactam–3', 'Cpd161–1', 'Cpd161–2', 'Cpd161–3', 'D116–1', 'D116–2', 'D116–3', 'Kbjk557–1', 'Kbjk557–2', 'Kbjk557–3', 'Mcc1019–1', 'Mcc1019–2', 'Mcc1019–3', 'Poloppin-II–1', 'Poloppin-II–2', 'Poloppin-II–3', 'Polotyrin–1', 'Polotyrin–2', 'Polotyrin–3', 'Poloxin–1', 'Poloxin–2', 'Poloxin–3', 'Poloxin2–1', 'Poloxin2–2', 'Poloxin2–3', 'Poloxipan–1', 'Poloxipan–2', 'Poloxipan–3', 'T521–1', 'T521–2', 'T521–3', 'TQ–1', 'TQ–2', 'TQ–3', 'Zinc20503376–1', 'Zinc20503376–2', 'Zinc20503376–3'],
+    'BS1': [-5.5, -6.9, -6.9, -5.7, -7.5, -7, -6.2, -7.9, -7.3, -4.3, -7.3, -5.7, -6.4, -7.5, -7.5, -5.8, -6.1, -6.1, -6.3, -7.9, -8.2, -6.5, -7.7, -7.8, -5.9, -6.4, -6.4, -7.5, -7.5, -7.9, -5.9, -7.9, -7, -5.7, -5.7, -5.8, -2.6, -6.7, -7, -6.1, -8.4, -6.6, -6.7, -6.6, -6.9, -6.8, -7.7, -7.3, -5.1, -7.1, -6.8, -6.6, -7.5, -7, -5.1, -5.3, -5.3, -7.3, -9.1, -7],
+    'BS2': [-5, -5.1, -4.7, -5.4, -5.9, -5.6, -6.3, -6.8, -5.9, -5.5, -4.8, -5.6, -5.2, -6.1, -5.5, -4.5, -4.9, -4.5, -6.3, -6.6, -5.8, -5.2, -5.3, -5.2, -5, -5.4, -5.1, -6.3, -6.8, -5.8, -6.9, -7.3, -6.6, -4.6, -4.8, -4.3, -7, -5.9, -6.3, -6.4, -6.7, -5.9, -5.9, -6, -6, -5.9, -6.4, -6.4, -5.4, -5.7, -5.4, -5.7, -5.9, -5.4, -4.5, -4.4, -4.2, -7.1, -6.1, -7.1],
+    'BS3': [-6.1, -4.6, -5.5, -6.4, -5.2, -5.8, -6.5, -5.3, -6.2, -5.1, -5.4, -6.3, -6.7, -5.7, -7, -5.5, -4.6, -5.2, -7.4, -5.7, -7.8, -6.7, -5.6, -5.8, -5.6, -4.4, -5.6, -7.5, -5.2, -7, -7.1, -6.6, -6.5, -5.3, -3.9, -4.9, -6.4, -5.6, -5.8, -7.7, -6.5, -6.8, -6.7, -4.4, -5.9, -7.1, -4.5, -6.4, -6.7, -5.4, -6.2, -6.2, -4.8, -6.1, -5, -4.3, -4.7, -7.7, -5.3, -8.5],
+    'BS4': [-6.3, -5.9, -4.9, -6.5, -6, -5.9, -6.5, -6.3, -5.9, -5.6, -5.7, -5.8, -6.5, -5.9, -5.3, -5.8, -5.6, -5, -6.9, -6.6, -5.6, -6.9, -6.6, -5.6, -5.9, -5.3, -5, -6.4, -6.6, -6, -7.2, -7, -6, -5.9, -4.8, -4.8, -6, -7.2, -5.6, -7.6, -6.8, -5.9, -6.4, -6.2, -5.6, -6.5, -5.8, -5.8, -6.3, -5.9, -5, -6.6, -6.3, -5.9, -5.4, -5, -4.5, -7, -6.8, -7],
+    'BS5': [-5.9, -5, -5.7, -6, -5.4, -6, -5.6, -5.3, -6.1, -5.3, -4.6, -5, -6.2, -5.5, -6.3, -5.8, -4.7, -5.3, -6.6, -6.3, -6.5, -6.4, -5.7, -6.4, -6.4, -4.9, -5.4, -6.3, -5.9, -6.3, -7.7, -6.9, -7.4, -5.3, -4.7, -4.9, -5.8, -5.9, -6, -7.1, -6.8, -6.6, -5.4, -5.1, -6.3, -6.1, -5.5, -6.3, -6.2, -5.1, -6.3, -6.7, -5.5, -5.9, -4.7, -4.3, -4.5, -6.5, -6.2, -7.3],
+    'BS6': [-5.9, -5.2, -4.8, -6.5, -5.1, -5.7, -7, -5, -6.4, -5.8, -4.2, -4.2, -6.2, -5.8, -5.4, -5.2, -5, -4.3, -7.2, -5.5, -5.6, -6.7, -5.1, -5.4, -5.1, -4.3, -4.5, -6.5, -5.4, -4.9, -7.9, -5.8, -6.1, -4.8, -4.1, -4.1, -6.7, -5.3, -4.6, -7.2, -5.5, -6.2, -5.3, -4.8, -4.4, -5.9, -5.3, -4.9, -6.9, -5.1, -4.5, -6.7, -5.3, -5.1, -4.6, -3.6, -4.1, -8.5, -5.5, -5.4],
+    'BS7': [-4.9, -4.8, -4.8, -5.6, -5.6, -5.5, -5.8, -5.3, -5.7, -5.6, -5.2, -4.7, -5.7, -5.4, -5.4, -4.5, -4.5, -4.4, -6, -6.2, -6.2, -5, -5.2, -5.2, -4.8, -4.9, -4.6, -5.9, -5.7, -6.3, -5.7, -7.1, -5.5, -4.6, -4.9, -4.6, -6.2, -5.5, -5.7, -6.6, -6.2, -6.5, -4.9, -4.5, -5.4, -5.5, -5.3, -5.4, -5.9, -4.9, -5.4, -5.6, -5.2, -5.4, -4, -3.9, -4.4, -6.9, -6.6, -6.1],
+    'Avg': [-5.7, -5.4, -5.7, -6.0, -5.8, -6.1, -6.3, -6.0, -6.5, -5.3, -5.3, -5.9, -6.1, -6.0, -6.7, -5.3, -5.1, -5.3, -6.7, -6.4, -7.3, -6.2, -5.9, -6.3, -5.5, -5.1, -5.7, -6.6, -6.2, -6.9, -6.9, -6.9, -6.7, -5.2, -4.7, -5.0, -5.8, -6.0, -6.4, -7.0, -6.7, -6.4, -5.9, -5.4, -6.3, -6.3, -5.8, -6.7, -6.1, -5.6, -6.1, -6.3, -5.8, -6.2, -4.8, -4.4, -4.7, -7.3, -6.5, -7.5],
+}
+# Convert to DataFrame
+df = pd.DataFrame(data)
+df.set_index('Protein-inhibitor', inplace=True)
+ 
+# Create the heatmap
+plt.figure(figsize=(10, 20))  # Adjust height to accommodate all y-axis labels
+sns.heatmap(
+    df,
+    annot=True,          # Set to True if you want to display the values
+    fmt=".1f",
+    cmap="coolwarm",
+    linewidths=0.5,
+    cbar_kws={'label': 'Binding Score'}
+)
+
+# Adjust y-axis labels
+plt.yticks(fontsize=8, rotation=0)  # Smaller font size and no rotation
+plt.xticks(fontsize=10)
+ 
+# Ensure no labels are cut off
+plt.tight_layout()
+ 
+# Display the heatmap
+plt.show()
+
+
+
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Sample dataset creation (replace this with your data)
+# Rows represent "Protein-inhibitor" and columns represent "Pocket" (C1, C2, ..., C10)
+data = {
+    'Protein-inhibitor': ['79–1', '79–2', '79–3', '3v–1', '3v–2', '3v–3', '4v–1', '4v–2', '4v–3', 'Abbapolin-12–1', 'Abbapolin-12–2', 'Abbapolin-12–3', 'Allopole–1', 'Allopole–2', 'Allopole–3', 'Allopole-A–1', 'Allopole-A–2', 'Allopole-A–3', 'An-329–1', 'An-329–2', 'An-329–3', 'Aristolactam–1', 'Aristolactam–2', 'Aristolactam–3', 'Cpd161–1', 'Cpd161–2', 'Cpd161–3', 'D116–1', 'D116–2', 'D116–3', 'Kbjk557–1', 'Kbjk557–2', 'Kbjk557–3', 'Mcc1019–1', 'Mcc1019–2', 'Mcc1019–3', 'Poloppin-II–1', 'Poloppin-II–2', 'Poloppin-II–3', 'Polotyrin–1', 'Polotyrin–2', 'Polotyrin–3', 'Poloxin–1', 'Poloxin–2', 'Poloxin–3', 'Poloxin2–1', 'Poloxin2–2', 'Poloxin2–3', 'Poloxipan–1', 'Poloxipan–2', 'Poloxipan–3', 'T521–1', 'T521–2', 'T521–3', 'TQ–1', 'TQ–2', 'TQ–3', 'Zinc20503376–1', 'Zinc20503376–2', 'Zinc20503376–3'],
+    'BS1': [-31.4, -6.9, -6.9, -80.1, -7.5, -7, -62.7, -7.9, -7.3, -41.1, -7.3, -5.7, -81.2, -7.5, -7.5, -33.2, -6.1, -6.1, -51.7, -7.9, -8.2, -36.3, -7.7, -7.8, -31.9, -6.4, -6.4, -41.3, -7.5, -7.9, -53.1, -7.9, -7, -36.3, -5.7, -5.8, -37.6, -6.7, -7, -53.0, -8.4, -6.6, -25.8, -6.6, -6.9, -16.8, -7.7, -7.3, -28.3, -7.1, -6.8, -34.9, -7.5, -7, -17.4, -5.3, -5.3, -32.6, -9.1, -7],
+    'BS2': [-31.8, -5.1, -4.7, -32.1, -5.9, -5.6, -31.7, -6.8, -5.9, -abb, -4.8, -5.6, -30.7, -6.1, -5.5, -30.7, -4.9, -4.5, -33.5, -6.6, -5.8, -34.2, -5.3, -5.2, -4.6, -5.4, -5.1, -6.3, -6.8, -5.8, -6.9, -7.3, -6.6, -4.6, -4.8, -4.3, -7, -5.9, -6.3, -6.4, -6.7, -5.9, -5.9, -6, -6, -5.9, -6.4, -6.4, -5.4, -5.7, -5.4, -5.7, -5.9, -5.4, -4.5, -4.4, -4.2, -7.1, -6.1, -7.1],
+    'BS3': [-6.1, -4.6, -5.5, -6.4, -5.2, -5.8, -6.5, -5.3, -6.2, -5.1, -5.4, -6.3, -6.7, -5.7, -7, -5.5, -4.6, -5.2, -7.4, -5.7, -7.8, -6.7, -5.6, -5.8, -5.6, -4.4, -5.6, -7.5, -5.2, -7, -7.1, -6.6, -6.5, -5.3, -3.9, -4.9, -6.4, -5.6, -5.8, -7.7, -6.5, -6.8, -6.7, -4.4, -5.9, -7.1, -4.5, -6.4, -6.7, -5.4, -6.2, -6.2, -4.8, -6.1, -5, -4.3, -4.7, -7.7, -5.3, -8.5],
+    'BS4': [-6.3, -5.9, -4.9, -6.5, -6, -5.9, -6.5, -6.3, -5.9, -5.6, -5.7, -5.8, -6.5, -5.9, -5.3, -5.8, -5.6, -5, -6.9, -6.6, -5.6, -6.9, -6.6, -5.6, -5.9, -5.3, -5, -6.4, -6.6, -6, -7.2, -7, -6, -5.9, -4.8, -4.8, -6, -7.2, -5.6, -7.6, -6.8, -5.9, -6.4, -6.2, -5.6, -6.5, -5.8, -5.8, -6.3, -5.9, -5, -6.6, -6.3, -5.9, -5.4, -5, -4.5, -7, -6.8, -7],
+    'BS5': [-5.9, -5, -5.7, -6, -5.4, -6, -5.6, -5.3, -6.1, -5.3, -4.6, -5, -6.2, -5.5, -6.3, -5.8, -4.7, -5.3, -6.6, -6.3, -6.5, -6.4, -5.7, -6.4, -6.4, -4.9, -5.4, -6.3, -5.9, -6.3, -7.7, -6.9, -7.4, -5.3, -4.7, -4.9, -5.8, -5.9, -6, -7.1, -6.8, -6.6, -5.4, -5.1, -6.3, -6.1, -5.5, -6.3, -6.2, -5.1, -6.3, -6.7, -5.5, -5.9, -4.7, -4.3, -4.5, -6.5, -6.2, -7.3],
+    'BS6': [-5.9, -5.2, -4.8, -6.5, -5.1, -5.7, -7, -5, -6.4, -5.8, -4.2, -4.2, -6.2, -5.8, -5.4, -5.2, -5, -4.3, -7.2, -5.5, -5.6, -6.7, -5.1, -5.4, -5.1, -4.3, -4.5, -6.5, -5.4, -4.9, -7.9, -5.8, -6.1, -4.8, -4.1, -4.1, -6.7, -5.3, -4.6, -7.2, -5.5, -6.2, -5.3, -4.8, -4.4, -5.9, -5.3, -4.9, -6.9, -5.1, -4.5, -6.7, -5.3, -5.1, -4.6, -3.6, -4.1, -8.5, -5.5, -5.4],
+    'BS7': [-4.9, -4.8, -4.8, -5.6, -5.6, -5.5, -5.8, -5.3, -5.7, -5.6, -5.2, -4.7, -5.7, -5.4, -5.4, -4.5, -4.5, -4.4, -6, -6.2, -6.2, -5, -5.2, -5.2, -4.8, -4.9, -4.6, -5.9, -5.7, -6.3, -5.7, -7.1, -5.5, -4.6, -4.9, -4.6, -6.2, -5.5, -5.7, -6.6, -6.2, -6.5, -4.9, -4.5, -5.4, -5.5, -5.3, -5.4, -5.9, -4.9, -5.4, -5.6, -5.2, -5.4, -4, -3.9, -4.4, -6.9, -6.6, -6.1],
+    'Avg': [-5.7, -5.4, -5.7, -6.0, -5.8, -6.1, -6.3, -6.0, -6.5, -5.3, -5.3, -5.9, -6.1, -6.0, -6.7, -5.3, -5.1, -5.3, -6.7, -6.4, -7.3, -6.2, -5.9, -6.3, -5.5, -5.1, -5.7, -6.6, -6.2, -6.9, -6.9, -6.9, -6.7, -5.2, -4.7, -5.0, -5.8, -6.0, -6.4, -7.0, -6.7, -6.4, -5.9, -5.4, -6.3, -6.3, -5.8, -6.7, -6.1, -5.6, -6.1, -6.3, -5.8, -6.2, -4.8, -4.4, -4.7, -7.3, -6.5, -7.5],
+}
+# Convert to DataFrame
+df = pd.DataFrame(data)
+df.set_index('Protein-inhibitor', inplace=True)
+ 
+# Create the heatmap
+plt.figure(figsize=(10, 20))  # Adjust height to accommodate all y-axis labels
+sns.heatmap(
+    df,
+    annot=True,          # Set to True if you want to display the values
+    fmt=".1f",
+    cmap="coolwarm",
+    linewidths=0.5,
+    cbar_kws={'label': 'Binding Score'}
+)
+
+# Adjust y-axis labels
+plt.yticks(fontsize=8, rotation=0)  # Smaller font size and no rotation
+plt.xticks(fontsize=10)
+ 
+# Ensure no labels are cut off
+plt.tight_layout()
+ 
+# Display the heatmap
+plt.show()
+
+
+http://www.ajuronline.org/
+http://jur.colostate.edu/
+https://cusj.columbia.edu/
+https://www.vmi.edu/academics/departments/chemistry/journal-of-undergraduate-chemistry-research/
+https://www.jyi.org/
+
+HS: https://ijhighschoolresearch.org/index.html#page-top
+
+Indexed but low impact: https://www.tsijournals.com/journals/international-journal-of-chemical-sciences.html
+http://www.rroij.com/chemistry.php
+https://juniperpublishers.com/omcij/
+https://www.hindawi.com/journals/jchem/

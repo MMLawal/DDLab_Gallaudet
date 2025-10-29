@@ -1,0 +1,78 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\froman\fcharset0 Times-Roman;\f2\fmodern\fcharset0 Courier;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;\red66\green66\blue66;
+\red200\green20\blue201;\red193\green101\blue28;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\csgray\c0;\cssrgb\c0\c0\c0;\cssrgb\c32941\c32941\c32941;
+\cssrgb\c83397\c23074\c82666;\cssrgb\c80555\c47366\c13837;\cssrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww11820\viewh8700\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 AMBER INSTALLATION IN LINUX - NCSA HPC \
+1. Download Miniconda, install, and initialize #Dependencies\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs21 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \outl0\strokewidth0 \strokec3 mkdir\cf4 \strokec4  \cf0 \strokec3 -p\cf4 \strokec4  \cf0 \strokec3 ~/miniconda3\
+wget\cf4 \strokec4  \cf0 \strokec3 https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh\cf4 \strokec4  \cf0 \strokec3 -O\cf4 \strokec4  \cf0 \strokec3 ~/miniconda3/miniconda.sh\
+bash\cf4 \strokec4  \cf0 \strokec3 ~/miniconda3/miniconda.sh\cf4 \strokec4  \cf0 \strokec3 -b\cf4 \strokec4  \cf0 \strokec3 -u\cf4 \strokec4  \cf0 \strokec3 -p\cf4 \strokec4  \cf0 \strokec3 ~/miniconda3\
+rm\cf4 \strokec4  \cf0 \strokec3 -rf\cf4 \strokec4  \cf0 \strokec3 ~/miniconda3/miniconda.sh\
+\
+#initialize\
+~/miniconda3/bin/conda\cf4 \strokec4  \cf0 \strokec3 init\cf4 \strokec4  \cf0 \strokec3 bash\
+\
+#restart terminal or shell\
+re-login \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 \outl0\strokewidth0 2. Select Option 3: Getting source code in tar format from Ambermd.org https://ambermd.org/GetAmber.php by filling name and institution appropriately\
+\
+3. Getting Amber22 for non-commerical use on Ambermd.org\
+\
+4. Drag both (2 & 3) tar files to your home directory \
+\
+5. Extract 2 & 3 (in your home directory terminal or wherever)\
+tar xvfj AmberTools23.tar.bz2\
+tar xvfj Amber22.tar.bz2\
+\
+6. Export and build\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+export AMBERHOME=~/amber22_src/\
+cd amber22_src/build/\
+#view and edit run_cmake\
+vi run_cmake #Change \cf5 DMPI\cf6 =\cf2 FALSE \cf5 -DCUDA\cf6 =\cf2 FALSE to TRUE and save\
+#load other dependencies available within the GPU-enabled HPC\
+module load openmpi cuda cmake\
+\pard\pardeftab720\partightenfactor0
+
+\f2\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 #for make error\
+follow this http://archive.ambermd.org/202302/0117.html troubleshooting conversation by adding the below to your "
+\f1 \cb7 CMakeLists.txt" file in 
+\f0\fs22 \cf2 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 amber22_src directory\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+#run cmake\
+\pard\pardeftab720\partightenfactor0
+
+\f2\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \outl0\strokewidth0 \strokec3 ./run_cmake\
+#install
+\f0\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 \outl0\strokewidth0 \
+
+\f2\fs24 \cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \outl0\strokewidth0 \strokec3 make install\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1 \cf0 \cb7 \strokec3 #ADDED LINE TO FIX CUB ISSUE\
+add_compile_definitions(THRUST_IGNORE_CUB_VERSION_CHECK)\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 \outl0\strokewidth0 7. Source for execution\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf6 source\cf2  /u/mlawal/amber22/amber.sh\
+\
+8. Follow the job submission protocol for your supercomputer environ.\
+}

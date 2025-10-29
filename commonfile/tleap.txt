@@ -14,7 +14,7 @@ saveAmberParm complex com.top com.rst7
 saveAmberParm complex step2_input.parm7 step2_input.rst7
 savepdb complex step2_input.pdb
 charge complex
-solvatebox complex TIP3PBOX 14 iso
+solvatebox complex TIP3PBOX 10 iso
 addionsRand complex Na+ 75.0 Cl- 75.0 
 saveAmberParm complex step3_input.parm7 step3_input.rst7
 savepdb complex step3_input.pdb
