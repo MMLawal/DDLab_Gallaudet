@@ -1,0 +1,161 @@
+# 08/11/24 13:35:02
+# Args:  wt_pah.parm7
+# Loaded topologies:
+#   wt_pah.parm7
+trajin wt_pah.dcd
+atomicfluct out wt_pah_rmsf.dat :1-307 byres
+go
+quit
+# 08/11/24 13:36:40
+# Args:  r158q_pah.parm7
+# Loaded topologies:
+#   r158q_pah.parm7
+trajin r158q_pah.dcd
+atomicfluct out r158q_pah_rmsf.dat :1-307 byres
+go
+quit
+# 08/11/24 13:37:14
+# Args:  r243q_pah.parm7
+# Loaded topologies:
+#   r243q_pah.parm7
+trajin r243q_pah.dcd
+atomicfluct out r243q_pah_rmsf.dat :1-307 byres
+go
+quit
+# 08/11/24 13:38:21
+# Args:  r252q_pah.parm7
+# Loaded topologies:
+#   r252q_pah.parm7
+trajin r252q_pah.dcd
+atomicfluct out r252q_pah_rmsf.dat :1-307 byres
+go
+quit
+# 08/11/24 13:38:43
+# Args:  r261q_pah.parm7
+# Loaded topologies:
+#   r261q_pah.parm7
+trajin r261q_pah.dcd
+atomicfluct out r261q_pah_rmsf.dat :1-307 byres
+go
+quit
+# 08/11/24 13:39:12
+# Args:  r408q_pah.parm7
+# Loaded topologies:
+#   r408q_pah.parm7
+trajin r408q_pah.dcd
+atomicfluct out r408q_pah_rmsf.dat :1-307 byres
+go
+quit
+# 08/11/24 13:42:52
+# Args:  wt_pah.parm7
+# Loaded topologies:
+#   wt_pah.parm7
+trajin wt_pah.dcd
+surf WT :1-307 out wt_pah_sasa.dat
+go
+quit
+# 08/11/24 14:18:51
+# Args:  r158q_pah.parm7
+# Loaded topologies:
+#   r158q_pah.parm7
+trajin r158q_pah.dcd
+surf 158 :1-307 out r158q_pah_sasa.dat
+go
+quit
+# 08/11/24 14:48:21
+# Args:  r243q_pah.parm7
+# Loaded topologies:
+#   r243q_pah.parm7
+trajin r243q_pah.dcd
+surf 243 :1-307 out r243q_pah_sasa.dat
+go
+quit
+# 08/11/24 15:21:02
+# Args:  r252q_pah.parm7
+# Loaded topologies:
+#   r252q_pah.parm7
+trajin r252q_pah.dcd
+surf 252 :1-307 out r252q_pah_sasa.dat
+go
+quit
+# 08/11/24 16:02:45
+# Args:  r261q_pah.parm7
+# Loaded topologies:
+#   r261q_pah.parm7
+trajin r261q_pah.dcd
+surf 261 :1-307 out r261q_pah_sasa.dat
+go
+quit
+# 08/11/24 16:33:24
+# Args:  r408q_pah.parm7
+# Loaded topologies:
+#   r408q_pah.parm7
+trajin r408q_pah.dcd
+surf 408 :1-307 out r408q_pah_sasa.dat
+go
+quit
+# 08/11/24 17:07:27
+# Args:  wt_pah.parm7
+# Loaded topologies:
+#   wt_pah.parm7
+trajin wt_pah.dcd
+hbond out wt_pah_hb.dat :1-307 avgout avg.dat
+go
+quit
+# 08/11/24 17:11:56
+# Args:  r158q_pah.parm7
+# Loaded topologies:
+#   r158q_pah.parm7
+trajin r158q_pah.dcd
+hbond out r158q_pah_hb.dat :1-307 avgout r158q_avg_hb.dat
+go
+quit
+# 08/11/24 17:13:10
+# Args:  r243q_pah.parm7
+# Loaded topologies:
+#   r243q_pah.parm7
+trajin r243q_pah.dcd
+hbond out r243q_pah_hb.dat :1-307 avgout r243q_avg_hb.dat
+go
+quit
+# 08/11/24 17:13:59
+# Args:  r252q_pah.parm7
+# Loaded topologies:
+#   r252q_pah.parm7
+trajin r252q_pah.dcd
+hbond out r252q_pah_hb.dat :1-307 avgout r252q_avg_hb.dat
+go
+quit
+# 08/11/24 17:15:02
+# Args:  r261q_pah.parm7
+# Loaded topologies:
+#   r261q_pah.parm7
+trajin r261q_pah.dcd
+hbond out r261q_pah_hb.dat :1-307 avgout r261q_avg_hb.dat
+go
+quit
+# 08/11/24 17:15:51
+# Args:  r408q_pah.parm7
+# Loaded topologies:
+#   r408q_pah.parm7
+trajin r408q_pah.dcd
+hbond out r408q_pah_hb.dat :1-307 avgout r408q_avg_hb.dat
+go
+quit
+# 08/12/24 12:08:16
+# Args:  r176q_pah.parm7
+# Loaded topologies:
+#   r176q_pah.parm7
+trajin r176q_pah.dcd
+atomicfluct out r176q_pah_rmsf.dat :1-307 byres
+go
+quit
+# 08/12/24 12:10:34
+# Args:  r176q_pah.parm7
+# Loaded topologies:
+#   r176q_pah.parm7
+trajin r176q_pah.dcd
+hbond out r176q_pah_hb.dat :1-307 avgout r176q_avg_hb.dat
+surf 176 :1-307 out r176q_pah_sasa.dat
+go
+quit
