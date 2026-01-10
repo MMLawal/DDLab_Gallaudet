@@ -1,0 +1,49 @@
+UNITS LENGTH=nm TIME=ps ENERGY=kj/mol  # Set units to nm, ps, and kJ/mol
+
+WHOLEMOLECULES ENTITY0=598,622,638,649,671,695,711,723,789,810,817,836,843,864,881,937,948,964,971,987,1006,1063,1077,1101,1120,1139,1158,1224,1235,1254,1271,1292,1369,1383,1398,1409,1430,1449,2218,2237,2261,2275,2299,2319,2343,2392,2402,2421,2440,2476,2527,2538,2554,2571,2590,2604,2690,2704,2726,2745,2764,2783,2844,2854,2864,2880,2894,2915,3019,3039,3063,3077,3098
+
+# Define the groups for the center of mass calculation
+ligand: COM ATOMS=3633-3674                # Replace with ligand atom indices
+protein: COM ATOMS=669-692                 # Replace with protein atom indices
+
+# Define the reaction coordinate (distance between ligand and protein COMs)
+d1: DISTANCE ATOMS=ligand,protein
+
+# Funnel setup
+fps: FUNNEL_PS LIGAND=ligand REFERENCE=ref_CA_beta.pdb ANCHOR=2704 POINTS=1.3225,0.7017,3.5216,2.1907,1.6511,2.3507
+
+FUNNEL ...
+   ARG=fps.lp,fps.ld                      # Use funnel projection and funnel distance as reaction coordinates
+   ZCC=2.2                                # Z-coordinate for the cylindrical-conical transition
+   ALPHA=0.55                             # Angle of the conical section (radians)
+   RCYL=0.1                               # Radius of the cylindrical section (in nm) - slightly increased
+   MINS=0 MAXS=3.0                        # Expanded reaction coordinate range for the funnel
+   KAPPA=5000                            # Reduced force constant for stability (kJ/mol/nm²)
+   NBINS=500 NBINZ=500                    # Adjusted number of bins
+   FILE=BIAS_fm                           # Output file for funnel biasing information
+   LABEL=funnel
+   WALKERS_MPI                            # Enable multiple walkers if running in parallel
+... FUNNEL
+
+# Well-Tempered Metadynamics setup
+METAD ...
+   ARG=d1                                 # Collective variable to bias
+   SIGMA=0.1                              # Gaussian width (in nm)
+   HEIGHT=0.5                             # Reduced Gaussian height for smoother biasing (kJ/mol)
+   PACE=250                               # Frequency of Gaussian deposition (in steps)
+   TEMP=300                               # Temperature in Kelvin
+   BIASFACTOR=10                          # Well-tempered metadynamics bias factor
+   FILE=HILLS_fm
+   LABEL=metad
+   WALKERS_MPI                            # Output file for metadynamics hills
+   GRID_MIN=0.0 GRID_MAX=3.0 GRID_BIN=500 # Expanded grid to match funnel CV range in nm
+   CALC_RCT RCT_USTRIDE=10                # Reduced calculation stride for efficiency
+... METAD
+
+# Lower and Upper walls for fps.ld and fps.lp
+LOWER_WALLS ARG=fps.ld AT=0.5 KAPPA=10000 EXP=2 OFFSET=0 LABEL=lwall   # Reduced wall force
+UPPER_WALLS ARG=fps.lp AT=2.8 KAPPA=10000 EXP=2 OFFSET=0 LABEL=uwall   # Adjusted upper wall
+UPPER_WALLS ARG=d1 AT=2.5 KAPPA=10000 EXP=2 OFFSET=0 LABEL=distwall    # Adjusted for grid extension
+
+PRINT STRIDE=500 ARG=* FILE=COLVAR_fm
+
