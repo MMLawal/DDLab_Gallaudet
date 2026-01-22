@@ -53,9 +53,6 @@ export AMBERHOME=~/amber22_src/
 cd amber22_src/build/
 #view and edit run_cmake
 vi run_cmake #Change DMPI=FALSE -DCUDA=FALSE to TRUE and save
-#load other dependencies available within the GPU-enabled HPC
-module purge
-module load cuda cmake
 #run cmake
 ./run_cmake
 #install
