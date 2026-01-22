@@ -38,6 +38,16 @@ mpirun
 tar xvfj AmberTools23.tar.bz2
 tar xvfj Amber22.tar.bz2
 
+Edit: In 2026, I used the below for AmberTools25 (https://ambermd.org/GetAmber.php#ambertools)
+conda create --name AmberTools25 python=3.12 (Only done once.)
+
+Next, install the code, which also only needs to be done once:
+
+  conda activate AmberTools25
+  conda config --add channels conda-forge
+  conda config --set channel_priority strict
+  conda install dacase::ambertools-dac=25
+
 7. Export and build
 export AMBERHOME=~/amber22_src/
 cd amber22_src/build/
