@@ -23,7 +23,6 @@ cd openmpi-5.0.3/
 ./configure --prefix=$HOME 2>&1 | tee config.out
 #load dependencies
 module purge
-module load cmake
 make -j 8 all 2>&1 | tee make.out #specifying 8 processors
 make install 2>&1 | tee install.out
 #test the installation
