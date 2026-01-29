@@ -29,10 +29,13 @@ edit run_cmake MPI=TRUE, DPLUMED for plumed
     -DDOWNLOAD_MINICONDA=FALSE -DBUILD_PYTHON=FALSE \
     -DBUILD_PERL=FALSE -DBUILD_GUI=FALSE \
     -DPMEMD_ONLY=TRUE -DCHECK_UPDATES=FALSE \
-    -DPLUMED_LIBRARY=/u/mlawal/plumed/lib/libplumed.so \
-    -DPLUMED_KERNEL_LIBRARY=/u/mlawal/plumed/lib/libplumedKernel.so \
-    -DPLUMED_INCLUDES=/u/mlawal/plumed/include \
-    -DPLUMED_WORKS=/u/mlawal/plumed \
+    -DPLUMED_LIBRARY=/u/username/plumed/lib/libplumed.so \
+    -DPLUMED_KERNEL_LIBRARY=/u/username/plumed/lib/libplumedKernel.so \
+    -DPLUMED_INCLUDES=/u/username/plumed/include \
+    -DPLUMED_WORKS=/u/username/plumed \
     2>&1 | tee  cmake.log
 
-execute ./run_cmake
+execute ./run_cmake, then
+make install
+
+put 'source /u/username/amber24/amber.sh' in ~/.bashrc and execute source ~/.bashrc
