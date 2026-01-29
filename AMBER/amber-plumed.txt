@@ -5,7 +5,7 @@ wget https://github.com/plumed/plumed2/releases/download/v2.10.0/plumed-2.10.0.t
 tar -xvzf plumed-2.10.0.tgz
 cd plumed-2.10.0
 
-./configure --prefix=$HOME/plumed --enable-modules=all --enable-mpi
+./configure --prefix=$HOME/plumed --enable-modules=all --enable-mpi --enable-dlopen
 make -j4
 make install
 
