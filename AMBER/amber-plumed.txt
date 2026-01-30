@@ -8,6 +8,7 @@ cd plumed-2.10.0
 ./configure --prefix=$HOME/plumed --enable-modules=all --enable-mpi --enable-dlopen
 make -j4
 make install
+plumed info --configuration #to check the configuration
 
 #add to .bashrc
 export PATH=$HOME/plumed/bin:$PATH
@@ -18,7 +19,7 @@ Note: https://ambermd.org/GetAmber.php named it as pmemd24, you may want to rena
 put thetar.bz2 in you home directory
 
 cd $HOME
-tar -xvjf Amber24.tar.bz2
+tar -xvjf amber24.tar.bz2
 cd amber24_src/build
 edit run_cmake MPI=TRUE, DPLUMED for plumed
 
