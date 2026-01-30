@@ -19,7 +19,7 @@ Note: https://ambermd.org/GetAmber.php named it as pmemd24, you may want to rena
 put thetar.bz2 in you home directory
 
 cd $HOME
-tar -xvjf amber24.tar.bz2
+tar xvjf amber24.tar.bz2
 cd amber24_src/build
 edit run_cmake MPI=TRUE, DPLUMED for plumed
 
