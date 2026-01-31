@@ -1,4 +1,4 @@
-#start with plumed, if you have previously installed Amber, uninstall it by going to 'build directory' and excuting 'make clean && make distclean' then rm -rf amberfolder
+#start with plumed, if you have previously installed Amber, uninstall it by going to 'build directory' and executing 'make clean && make distclean' then rm -rf amberfolder
 
 cd $HOME
 wget https://github.com/plumed/plumed2/releases/download/v2.10.0/plumed-2.10.0.tgz
@@ -16,7 +16,7 @@ export LD_LIBRARY_PATH=$HOME/plumed/lib:$LD_LIBRARY_PATH
 
 #Amber24 installation
 Note: https://ambermd.org/GetAmber.php named it as pmemd24, you may want to rename (amber24) for convenience
-put thetar.bz2 in you home directory
+Put the tar.bz2 in your home directory
 
 cd $HOME
 tar xvjf amber24.tar.bz2
@@ -41,3 +41,7 @@ execute ./run_cmake, then
 make install
 
 put 'source /u/username/amber24/amber.sh' in ~/.bashrc and execute source ~/.bashrc
+
+
+###It didn't work after several approaches and troubleshooting/debugging
+The 2024 trial on NCSA Delta worked, though
