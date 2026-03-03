@@ -101,7 +101,7 @@ for idx, isoform in enumerate(isoform_order):
     else:
         ax.set_ylabel("")
     
-    ax.set_ylim(2.2, 3.3)
+    ax.set_ylim(1.8, 3.3)
     ax.grid(axis='y', linestyle='--', alpha=0.3)
     ax.tick_params(axis='both', labelsize=9)
 
@@ -123,7 +123,7 @@ axes[2].legend(handles=legend_elements, loc='lower right', fontsize=8)
 plt.tight_layout()
 plt.savefig("pvfe_explicit_distribution.png", bbox_inches='tight', dpi=300)
 plt.savefig("pvfe_explicit_distribution.pdf", bbox_inches='tight')
-plt.show()
+plt.close()
 
 # Supplementary statistical table
 summary_stats = df_success.groupby(["isoform", "pocket"])["pvfe_entropy"].agg(
